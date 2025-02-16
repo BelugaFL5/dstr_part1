@@ -2,6 +2,7 @@
 #include <regex>
 #include <iomanip>
 #include <sstream>
+#include <fstream>  // For file handling
 
 using namespace std;
 
@@ -104,8 +105,16 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     HashTable hashTable;
     initializeHashTable(hashTable);
     int govArticles = 0;
+
+    // Open file for writing output
+    ofstream outputFile("output.txt");
     
-    cout << "\nAnalyzing government-related articles...\n";
+    if (!outputFile.is_open()) {
+        cout << "Error: Could not open output file for writing!" << endl;
+        return;
+    }
+    
+    outputFile << "\nAnalyzing government-related articles...\n";
     
     // Process articles
     for (int i = 0; i < fakeSize; i++) {
@@ -122,16 +131,19 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
         }
     }
     
-    // Get and display top words
+    // Get and store top words
     WordFreq topWords[MAX_WORDS];
     int topWordsCount = 0;
     getTopWords(hashTable, topWords, topWordsCount);
     
-    cout << "\n(**) Found " << govArticles << " government-related articles\n";
-    cout << "(**) Top " << min(TOP_WORDS, topWordsCount) << " words in fake government news:\n";
+    outputFile << "\n(**) Found " << govArticles << " government-related articles\n";
+    outputFile << "(**) Top " << min(TOP_WORDS, topWordsCount) << " words in fake government news:\n";
     
     for (int i = 0; i < min(TOP_WORDS, topWordsCount); i++) {
-        cout << setw(20) << left << topWords[i].word 
-             << ": " << topWords[i].frequency << " occurrences\n";
+        outputFile << setw(20) << left << topWords[i].word 
+                   << ": " << topWords[i].frequency << " occurrences\n";
     }
+    
+    // Close the file
+    outputFile.close();
 }

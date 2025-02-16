@@ -13,8 +13,25 @@ const int TOP_WORDS = 200;    // Number of top words to display
 
 // Structure to store word frequency
 struct WordFreq {
-    string word;
+    std::string word;
     int frequency;
+    bool isOccupied;  // Flag to track if slot is being used
+
+    // Constructor to initialize members
+    WordFreq() {
+        word = "";
+        frequency = 0;
+        isOccupied = false;
+    }
+};
+
+// Structure to store hash table
+struct HashTable {
+    WordFreq table[HASH_TABLE_SIZE];
+    int size;  // Current number of elements
+
+    // Constructor
+    HashTable() : size(0) {}
 };
 
 unsigned int hashFunction(const string& word);
