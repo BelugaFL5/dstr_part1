@@ -32,25 +32,18 @@ size_t calcMemoryUsage(int fakeSize, int trueSize) {
 
 // Function to calculate memory usage
 size_t calcMemoryUsage(HashTable& hashTable) {
-    size_t totalMemory = 0;
+    size_t memoryUsage = sizeof(hashTable);  // Base size of the hash table object
 
-    // Memory for the array of WordFreq objects
-    totalMemory += HASH_TABLE_SIZE * sizeof(WordFreq); 
-
-    // Add memory for each word in the hash table
+    // Add memory used by each WordFreq in the hash table
     for (int i = 0; i < HASH_TABLE_SIZE; i++) {
         if (hashTable.table[i].isOccupied) {
-            // Memory for the word string 
-            totalMemory += hashTable.table[i].word.capacity(); 
-
-            // Memory for the frequency count (int)
-            totalMemory += sizeof(hashTable.table[i].frequency);
+            memoryUsage += sizeof(hashTable.table[i]);  // Size of the WordFreq structure
+            memoryUsage += hashTable.table[i].word.capacity();  // Memory used by the string inside WordFreq
         }
     }
 
-    return totalMemory;
+    return memoryUsage;
 }
-
 
 // Function to trim spaces and special characters from strings
 string trim(string str) {

@@ -18,7 +18,7 @@ const int TOP_WORDS = 200;    // Number of top words to display
 
 // Structure to store word frequency
 struct WordFreq {
-    std::string word;
+    string word;
     int frequency;
     bool isOccupied;  // Flag to track if slot is being used
 

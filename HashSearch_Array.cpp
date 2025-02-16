@@ -167,13 +167,14 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     }
 
     // Call recordWords to store all words in a file
-    // recordWords("allWords.txt", govArticles, hashTable);
+    recordWords("allWords.txt", govArticles, hashTable);
 
     // Calculate elapsed time
     double elapsedTime = calculateElapsedTime(start);
     cout << "\nTime taken for hash search: " << fixed << setprecision(1) << elapsedTime << "s" << endl;
 
-    // Calculate memory usage for hash table
-    size_t memoryUsage = calcMemoryUsage(hashTable);
-    cout << "Memory usage for hash search: " << memoryUsage / (1024 * 1024) << "MB" << endl;  // Convert to MB
+    // Calculate memory usage in KB
+    size_t memoryUsageKB = calcMemoryUsage(hashTable);
+    cout << "Memory usage: " << memoryUsageKB / 1024 << " KB" << endl;  // Convert to KB
+
 }
