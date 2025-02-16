@@ -107,8 +107,8 @@ Article* readCSV(const string& inputFile, int& count, bool trackIssues) {
 
     file.close();
 
-    cout << "(*) Successfully stored " << count << " articles from " << inputFile << endl;
-    cout << "Debug Info: Total Rows Read = " << totalRows << ", Stored = " << count << ", Skipped = " << skipped << ", Recovered = " << recovered << endl;
+    // cout << "(*) Successfully stored " << count << " articles from " << inputFile << endl;
+    // cout << "Debug Info: Total Rows Read = " << totalRows << ", Stored = " << count << ", Skipped = " << skipped << ", Recovered = " << recovered << endl;
     
     return head;
 }
