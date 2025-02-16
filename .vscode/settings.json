@@ -113,6 +113,8 @@
     "ratio": "cpp",
     "format": "cpp",
     "span": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "cstdarg": "cpp",
+    "set": "cpp"
   }
 }

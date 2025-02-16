@@ -2,7 +2,9 @@
 #include <regex>
 #include <iomanip>
 #include <sstream>
-#include <fstream>  // For file handling
+#include <fstream>
+#include <set>      // For std::set
+#include <chrono>
 
 using namespace std;
 
@@ -50,29 +52,55 @@ bool isGov(const string& subject) {
     return regex_search(subject, regex("government", regex_constants::icase));
 }
 
+// Function to write top words and their frequencies to a file
+void recordWords(const string& fileName, int govArticles, const HashTable& hashTable) {
+    ofstream outputFile(fileName);
+
+    if (!outputFile.is_open()) {
+        cout << "Error: Could not open output file for writing!" << endl;
+        return;
+    }
+
+    // Write all words and their frequencies
+    for (int i = 0; i < HASH_TABLE_SIZE; i++) {
+        if (hashTable.table[i].isOccupied) {
+            outputFile << setw(20) << left << hashTable.table[i].word 
+                       << ": " << hashTable.table[i].frequency << " occurrences\n";
+        }
+    }
+
+    // Close the file
+    outputFile.close();
+}
+
+
 // Tokenize content into words
 void tokenizeText(const string& text, string words[], int& wordCount) {
+    // Define a set of stop words
+    static const std::set<std::string> stopWords = {
+        "the", "and", "for", "that", "this", "with", "from", "was", "are", "has", 
+        "have", "had", "you", "they", "their", "not", "who", "said", "his", "one", 
+        "were", "about", "our", "what", "just", "into", "more", "its", "which", 
+        "but", "been", "would", "all", "will", "when", "before", "than", "then",
+        "over", "other", "some", "also", "could", "only", "may", "many", "most",
+        "these", "any", "like", "two", "her", "his", "him", "did", "why"
+    };
+
     stringstream ss(text);
     string word;
     wordCount = 0;
-    
+
     while (ss >> word && wordCount < MAX_WORDS) {
-        transform(word.begin(), word.end(), word.begin(), ::tolower);
-        
+        transform(word.begin(), word.end(), word.begin(), ::tolower);  // Convert to lowercase
+
         // Remove punctuation and special characters
-        word.erase(remove_if(word.begin(), word.end(), 
-                           [](char c) { return !isalnum(c); }), 
-                  word.end());
-        
-        // Skip URLs and stop words
-        if (word.empty() || word.find("http") == 0 || word.length() < 3 ||
-            word == "the" || word == "and" || word == "for" || word == "that" ||
-            word == "this" || word == "with" || word == "from" || word == "was" ||
-            word == "are" || word == "has" || word == "have" || word == "had" ||
-            word == "you" || word == "they" || word == "their") {
+        word.erase(remove_if(word.begin(), word.end(), [](char c) { return !isalnum(c); }), word.end());
+
+        // Skip stop words and words that are too short or URLs
+        if (word.empty() || word.find("http") == 0 || word.length() < 3 || stopWords.find(word) != stopWords.end()) {
             continue;
         }
-        
+
         words[wordCount++] = word;
     }
 }
@@ -102,21 +130,12 @@ void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize)
 
 // Main analysis function
 void analyzeContent_Array(Article fakeArr[], int fakeSize) {
+    auto start = startTimer(); // Start time measurement
+
     HashTable hashTable;
     initializeHashTable(hashTable);
     int govArticles = 0;
 
-    // Open file for writing output
-    ofstream outputFile("output.txt");
-    
-    if (!outputFile.is_open()) {
-        cout << "Error: Could not open output file for writing!" << endl;
-        return;
-    }
-    
-    outputFile << "\nAnalyzing government-related articles...\n";
-    
-    // Process articles
     for (int i = 0; i < fakeSize; i++) {
         if (isGov(fakeArr[i].subject)) {
             govArticles++;
@@ -124,26 +143,32 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
             int wordCount = 0;
             
             tokenizeText(fakeArr[i].content, words, wordCount);
-            
+
             for (int j = 0; j < wordCount; j++) {
                 insertWord(hashTable, words[j]);
             }
         }
     }
-    
-    // Get and store top words
+
     WordFreq topWords[MAX_WORDS];
     int topWordsCount = 0;
     getTopWords(hashTable, topWords, topWordsCount);
     
-    outputFile << "\n(**) Found " << govArticles << " government-related articles\n";
-    outputFile << "(**) Top " << min(TOP_WORDS, topWordsCount) << " words in fake government news:\n";
-    
+    cout << "\n(**) Found " << govArticles << " government-related articles" << endl;
+    cout << "(*) Top words: " << endl;
     for (int i = 0; i < min(TOP_WORDS, topWordsCount); i++) {
-        outputFile << setw(20) << left << topWords[i].word 
-                   << ": " << topWords[i].frequency << " occurrences\n";
+        cout << setw(20) << left << topWords[i].word
+             << ": " << topWords[i].frequency << " occurrences" << endl;
     }
-    
-    // Close the file
-    outputFile.close();
+
+    // Call recordWords to store all words in a file
+    recordWords("allWords.txt", govArticles, hashTable);
+
+    // Calculate elapsed time
+    double elapsedTime = calculateElapsedTime(start);
+    cout << "\nTime taken for word frequency analysis: " << elapsedTime << "s" << endl;
+
+    // Calculate memory usage for hash table
+    size_t memoryUsage = calculateMemoryUsage(hashTable);
+    cout << "Memory usage for word frequencies: " << memoryUsage / (1024 * 1024) << " MB" << endl;  // Convert to MB
 }
