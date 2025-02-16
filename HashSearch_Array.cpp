@@ -1,22 +1,61 @@
 #include "HashSearch_Array.hpp"
 #include <regex>
 #include <iomanip>
+#include <sstream>
 
 using namespace std;
 
-// Function to check if the article is government-related
+// Hash function implementation
+unsigned int hashFunction(const string& word) {
+    unsigned int hash = 0;
+    for (char c : word) {
+        hash = hash * 31 + c;  // Using 31 as multiplier for good distribution
+    }
+    return hash % HASH_TABLE_SIZE;
+}
+
+// Initialize hash table
+void initializeHashTable(HashTable& hashTable) {
+    hashTable.size = 0;
+    for (int i = 0; i < HASH_TABLE_SIZE; i++) {
+        hashTable.table[i] = WordFreq();
+    }
+}
+
+// Insert word into hash table using linear probing
+void insertWord(HashTable& hashTable, const string& word) {
+    if (hashTable.size >= HASH_TABLE_SIZE) return;  // Table is full
+    
+    unsigned int index = hashFunction(word);
+    
+    // Linear probing to handle collisions
+    while (hashTable.table[index].isOccupied && 
+           hashTable.table[index].word != word) {
+        index = (index + 1) % HASH_TABLE_SIZE;
+    }
+    
+    if (!hashTable.table[index].isOccupied) {
+        hashTable.table[index].word = word;
+        hashTable.table[index].frequency = 1;
+        hashTable.table[index].isOccupied = true;
+        hashTable.size++;
+    } else {
+        hashTable.table[index].frequency++;
+    }
+}
+
+// Check if the article is government-related
 bool isGov(const string& subject) {
     return regex_search(subject, regex("government", regex_constants::icase));
 }
 
-// Function to clean and tokenize text
+// Tokenize content into words
 void tokenizeText(const string& text, string words[], int& wordCount) {
     stringstream ss(text);
     string word;
     wordCount = 0;
     
     while (ss >> word && wordCount < MAX_WORDS) {
-        // Convert to lowercase
         transform(word.begin(), word.end(), word.begin(), ::tolower);
         
         // Remove punctuation and special characters
@@ -24,14 +63,12 @@ void tokenizeText(const string& text, string words[], int& wordCount) {
                            [](char c) { return !isalnum(c); }), 
                   word.end());
         
-        // Skip empty strings and common stop words
-        if (word.empty() || word == "the" || word == "a" || word == "an" || 
-            word == "and" || word == "or" || word == "but" || word == "in" || 
-            word == "on" || word == "at" || word == "to" || word == "for" || 
-            word == "of" || word == "with" || word == "by" || word == "you" || 
-            word == "i" || word == "he" || word == "she" || word == "it" ||
-            word == "we" || word == "they" || word == "is" || word == "are" || 
-            word == "is" || word == "that" || word == "this") {
+        // Skip URLs and stop words
+        if (word.empty() || word.find("http") == 0 || word.length() < 3 ||
+            word == "the" || word == "and" || word == "for" || word == "that" ||
+            word == "this" || word == "with" || word == "from" || word == "was" ||
+            word == "are" || word == "has" || word == "have" || word == "had" ||
+            word == "you" || word == "they" || word == "their") {
             continue;
         }
         
@@ -39,59 +76,62 @@ void tokenizeText(const string& text, string words[], int& wordCount) {
     }
 }
 
-// Function to analyze word frequencies in government-related fake news
-void analyzeContent_Array(Article fakeArr[], int fakeSize) {
-    WordFreq wordFreqs[MAX_WORDS] = {};  // Initialize array of WordFreq structures
-    int uniqueWords = 0;
+// Convert hash table to sorted array for top words
+void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize) {
+    resultSize = 0;
     
-    // Process each fake article
+    // Copy non-empty entries to result array
+    for (int i = 0; i < HASH_TABLE_SIZE; i++) {
+        if (hashTable.table[i].isOccupied) {
+            result[resultSize++] = hashTable.table[i];
+        }
+    }
+    
+    // Sort using bubble sort
+    for (int i = 0; i < resultSize - 1; i++) {
+        for (int j = 0; j < resultSize - i - 1; j++) {
+            if (result[j].frequency < result[j + 1].frequency) {
+                WordFreq temp = result[j];
+                result[j] = result[j + 1];
+                result[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Main analysis function
+void analyzeContent_Array(Article fakeArr[], int fakeSize) {
+    HashTable hashTable;
+    initializeHashTable(hashTable);
+    int govArticles = 0;
+    
+    cout << "\nAnalyzing government-related articles...\n";
+    
+    // Process articles
     for (int i = 0; i < fakeSize; i++) {
-        // Only process government-related articles
         if (isGov(fakeArr[i].subject)) {
+            govArticles++;
             string words[MAX_WORDS];
             int wordCount = 0;
             
-            // Tokenize the content
             tokenizeText(fakeArr[i].content, words, wordCount);
             
-            // Count word frequencies
             for (int j = 0; j < wordCount; j++) {
-                bool found = false;
-                
-                // Check if word already exists in frequency array
-                for (int k = 0; k < uniqueWords; k++) {
-                    if (wordFreqs[k].word == words[j]) {
-                        wordFreqs[k].frequency++;
-                        found = true;
-                        break;
-                    }
-                }
-                
-                // Add new word if not found and there's space
-                if (!found && uniqueWords < MAX_WORDS) {
-                    wordFreqs[uniqueWords].word = words[j];
-                    wordFreqs[uniqueWords].frequency = 1;
-                    uniqueWords++;
-                }
+                insertWord(hashTable, words[j]);
             }
         }
     }
     
-    // Sort word frequencies in descending order using bubble sort
-    for (int i = 0; i < uniqueWords - 1; i++) {
-        for (int j = 0; j < uniqueWords - i - 1; j++) {
-            if (wordFreqs[j].frequency < wordFreqs[j + 1].frequency) {
-                WordFreq temp = wordFreqs[j];
-                wordFreqs[j] = wordFreqs[j + 1];
-                wordFreqs[j + 1] = temp;
-            }
-        }
-    }
+    // Get and display top words
+    WordFreq topWords[MAX_WORDS];
+    int topWordsCount = 0;
+    getTopWords(hashTable, topWords, topWordsCount);
     
-    // Print top words and their frequencies
-    cout << "\n(**) Top " << TOP_WORDS << " words in fake government news articles:\n";
-    for (int i = 0; i < min(TOP_WORDS, uniqueWords); i++) {
-        cout << setw(20) << left << wordFreqs[i].word 
-             << ": " << wordFreqs[i].frequency << " occurrences\n";
+    cout << "\n(**) Found " << govArticles << " government-related articles\n";
+    cout << "(**) Top " << min(TOP_WORDS, topWordsCount) << " words in fake government news:\n";
+    
+    for (int i = 0; i < min(TOP_WORDS, topWordsCount); i++) {
+        cout << setw(20) << left << topWords[i].word 
+             << ": " << topWords[i].frequency << " occurrences\n";
     }
 }

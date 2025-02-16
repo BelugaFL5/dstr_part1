@@ -19,6 +19,14 @@ int main() {
     // **Calculate percentage of fake political news for each month in 2016**
     linearSearch_Array(fakeArticles, fakeCount, trueArticles, trueCount); */
 
+    // Debugging: Print some articles to ensure they are being read
+    cout << "Displaying some articles from fake news dataset:\n";
+    for (int i = 0; i < min(fakeCount, 5); i++) {
+        cout << "Title: " << fakeArticles[i].title << "\n";
+        cout << "Subject: " << fakeArticles[i].subject << "\n";
+        cout << "Date: " << fakeArticles[i].date << "\n";
+    }
+
     // **Frequent words in government-related news**
     analyzeContent_Array(fakeArticles, fakeCount);
 
