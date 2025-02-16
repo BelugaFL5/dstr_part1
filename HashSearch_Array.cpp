@@ -74,20 +74,20 @@ void recordWords(const string& fileName, int govArticles, const HashTable& hashT
 
 // Function to check if the word is a stop word
 bool isStopWord(const string& word) {
-    return word == "about" || word == "all" || word == "also" || word == "and" || word == "any" || word == "after" || 
-           word == "are" || word == "been" || word == "before" || word == "but" || word == "cannot" || word == "can" || 
-           word == "could" || word == "did" || word == "for" || word == "from" || word == "have" || word == "said"||
-           word == "has" || word == "he" || word == "her" || word == "him" || word == "his" || word == "had" || word == "how" ||
-           word == "i" || word == "in" || word == "into" || word == "is" || word == "it" || word == "its" ||
-           word == "just" || word == "let" || word == "like" || word == "many" || word == "may" || 
-           word == "more" || word == "most" || word == "much" || word == "must" || word == "not" || word == "other" || 
-           word == "of" || word == "on" || word == "one" || word == "or" || word == "our" || word == "out" || word == "said" ||
-           word == "she" || word == "some" || word == "than" || word == "that" || word == "the" || word == "should" || word == "those" || 
-           word == "them" || word == "there" || word == "they" || word == "this" || word == "to" || word == "then" || word == "these" ||
-           word == "too" || word == "two" || word == "was" || word == "we" || word == "what" || word == "want" || word == "way" || 
-           word == "when" || word == "where" || word == "which" || word == "who" || word == "why" || word == "will" || 
-           word == "with" || word == "you" || word == "your";
+    return word == "about" || word == "all" || word == "also" || word == "and" || word == "any" || word == "are" || 
+           word == "been" || word == "before" || word == "but" || word == "cannot" || word == "can" || word == "could" || 
+           word == "did" || word == "for" || word == "from" || word == "got" || word == "have" || word == "has" || 
+           word == "he" || word == "her" || word == "him" || word == "his" || word == "had" || word == "how" || 
+           word == "into" || word == "its" || word == "just" || word == "let" || word == "like" || word == "many" || 
+           word == "may" || word == "more" || word == "most" || word == "much" || word == "must" || word == "not" || 
+           word == "one" || word == "other" || word == "our" || word == "out" || word == "said" || 
+           word == "she" || word == "since" || word == "some" || word == "than" || word == "that" || word == "the" || 
+           word == "then" || word == "these" || word == "they" || word == "there" || word == "this" || word == "those" || 
+           word == "too" || word == "two" || word == "was" || word == "we" || word == "what" || 
+           word == "want" || word == "way" || word == "when" || word == "where" || word == "which" || word == "who" || 
+           word == "why" || word == "will" || word == "with" || word == "would" || word == "you" || word == "your";
 }
+
 
 
 void tokenizeText(const string& text, string words[], int& wordCount) {
@@ -167,7 +167,7 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     }
 
     // Call recordWords to store all words in a file
-    recordWords("allWords.txt", govArticles, hashTable);
+    // recordWords("allWords.txt", govArticles, hashTable);
 
     // Calculate elapsed time
     double elapsedTime = calculateElapsedTime(start);
