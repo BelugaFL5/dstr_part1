@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <chrono>
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -148,6 +149,46 @@ int extractYear(string date) {
     }
 }
 
+// Heapify function to maintain heap property
+void heapify(vector<int>& arr, int n, int i) {
+    int largest = i; // Root
+    int left = 2 * i + 1; // Left child
+    int right = 2 * i + 2; // Right child
+
+    // If left child is larger than root
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+
+    // If right child is larger than largest so far
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    // If largest is not root
+    if (largest != i) {
+        swap(arr[i], arr[largest]);
+
+        // Recursively heapify the affected sub-tree
+        heapify(arr, n, largest);
+    }
+}
+
+// Heap sort function to sort the array
+void heapSort(vector<int>& arr) {
+    int n = arr.size();
+
+    // Build a max heap
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+
+    // Extract elements from the heap one by one
+    for (int i = n - 1; i > 0; i--) {
+        swap(arr[0], arr[i]);
+
+        // Call heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
+}
+
 // Function to count the number of articles per year
 void countArticlesByYear(Article* articles, int articleCount) {
     map<int, int> yearCount;
@@ -160,10 +201,19 @@ void countArticlesByYear(Article* articles, int articleCount) {
         }
     }
 
+    // Get the years and sort them using heap sort
+    vector<int> years;
+    for (const auto& entry : yearCount) {
+        years.push_back(entry.first);
+    }
+
+    // Sort the years using heap sort
+    heapSort(years);
+
     // Display the results sorted by year
     cout << "\n(**) Articles by Year:\n";
-    for (const auto& entry : yearCount) {
-        cout << entry.first << ": " << entry.second << " articles" << endl;
+    for (int year : years) {
+        cout << year << ": " << yearCount[year] << " articles" << endl;
     }
 }
 
