@@ -21,10 +21,9 @@ int main() {
     cout << "Fake News Dataset: " << countArticles(fakeHead) << " articles" << endl;
     cout << "True News Dataset: " << countArticles(trueHead) << " articles" << endl;
 
-    
+    // Display valid articles with proper dates
     cout << "Valid articles with proper dates for fake csv: " << countValidArticles(fakeHead) << endl;
     cout << "Valid articles with proper dates for true csv: " << countValidArticles(trueHead) << endl;
-
 
     // Sorting articles by year
     cout << "\nSorting articles by year..." << endl;
@@ -32,8 +31,7 @@ int main() {
     bubbleSort(trueHead);
     cout << "(*) Sorting completed!" << endl;
 
-
-    // Display articles per year for both datasets
+    // Display articles per year for both datasets using the modified linked list approach
     countArticlesPerYear(fakeHead, "Fake News");
     countArticlesPerYear(trueHead, "True News");
 

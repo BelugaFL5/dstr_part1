@@ -118,11 +118,15 @@ void displayArticles(Article* head, int count) {
     Article* temp = head;
     int i = 0;
     while (temp && i < count) {
-        std::cout << "Title: " << temp->title << "\nDate: " << temp->date << "\n\n";
+        std::cout << "Title: " << temp->title << "\n";
+        std::cout << "Content: " << temp->content << "\n";
+        std::cout << "Subject: " << temp->subject << "\n";
+        std::cout << "Date: " << temp->date << "\n\n";
         temp = temp->next;
         i++;
     }
 }
+
 
 // Function to delete the entire linked list
 void deleteList(Article*& head) {
