@@ -4,6 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <chrono>
+#include <string.h>
 
 using namespace std;
 
@@ -71,24 +72,41 @@ void recordWords(const string& fileName, int govArticles, const HashTable& hashT
     outputFile.close();
 }
 
-// Function to check if the word is a stop word
-bool isStopWord(const string& word) {
-    return word == "about" || word == "all" || word == "also" || word == "and" || word == "any" || word == "are" || 
-           word == "been" || word == "before" || word == "but" || word == "cannot" || word == "can" || word == "could" || 
-           word == "did" || word == "for" || word == "from" || word == "got" || word == "have" || word == "has" || 
-           word == "he" || word == "her" || word == "him" || word == "his" || word == "had" || word == "how" || 
-           word == "into" || word == "its" || word == "just" || word == "let" || word == "like" || word == "many" || 
-           word == "may" || word == "more" || word == "most" || word == "much" || word == "must" || word == "not" || 
-           word == "one" || word == "other" || word == "our" || word == "out" || word == "said" || 
-           word == "she" || word == "since" || word == "some" || word == "than" || word == "that" || word == "the" || 
-           word == "then" || word == "these" || word == "they" || word == "there" || word == "this" || word == "those" || 
-           word == "too" || word == "two" || word == "was" || word == "we" || word == "what" || 
-           word == "want" || word == "way" || word == "when" || word == "where" || word == "which" || word == "who" || 
-           word == "why" || word == "will" || word == "with" || word == "would" || word == "you" || word == "your";
+// Function to load stop words from a file
+void loadStopWords(const string& fileName) {
+    ifstream file(fileName);
+    string word;
+    
+    if (!file) {
+        cerr << "Error opening stop words file!" << endl;
+        return;
+    }
+
+    // Read words from the file
+    while (file >> word && stopWordsCount < MAX_STOPWORDS) {
+        // Convert word to lowercase
+        transform(word.begin(), word.end(), word.begin(), ::tolower);
+
+        // Copy the word into the stopWords array
+        strncpy(stopWords[stopWordsCount], word.c_str(), MAX_WORD_LENGTH - 1);
+        stopWords[stopWordsCount][MAX_WORD_LENGTH - 1] = '\0';  // Ensure null-termination
+        stopWordsCount++;
+    }
+
+    file.close();
 }
 
+// Function to check if the word is a stop word
+bool isStopWord(const string& word) {
+    for (int i = 0; i < stopWordsCount; i++) {
+        if (word == stopWords[i]) {
+            return true;  // Word is found in the stop words list
+        }
+    }
+    return false;  // Word is not a stop word
+}
 
-
+// Go through text into words
 void tokenizeText(const string& text, string words[], int& wordCount) {
     stringstream ss(text);
     string word;
@@ -136,6 +154,9 @@ void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize)
 void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     auto start = startTimer(); // Start time measurement
 
+    // Load stop words from stopWords.txt
+    loadStopWords("stopWords.txt");
+
     HashTable hashTable;
     initializeHashTable(hashTable);
     int govArticles = 0;
@@ -166,7 +187,7 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     }
 
     // Call recordWords to store all words in a file
-    recordWords("allWords.txt", govArticles, hashTable);
+    recordWords("otherWords.txt", govArticles, hashTable);
 
     // Calculate elapsed time
     double elapsedTime = calculateElapsedTime(start);
@@ -175,5 +196,4 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     // Calculate memory usage in KB
     size_t memoryUsageKB = calcMemoryUsage(hashTable);
     cout << "Memory usage: " << memoryUsageKB / 1024 << " KB" << endl;  // Convert to KB
-
 }

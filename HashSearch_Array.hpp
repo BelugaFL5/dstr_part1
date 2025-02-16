@@ -6,11 +6,13 @@
 #include <string>
 #include <regex>
 
-unsigned int hashFunction(const string& word);
+// Function declarations
+unsigned int hashFunction(const std::string& word);
 void initializeHashTable(HashTable& hashTable);
-void insertWord(HashTable& hashTable, const string& word);
-bool isGov(const string& subject);
-void recordWords(const string& fileName, int govArticles, const HashTable& hashTable);
+void insertWord(HashTable& hashTable, const std::string& word);
+bool isGov(const std::string& subject);
+void recordWords(const std::string& fileName, int govArticles, const HashTable& hashTable);
+void loadStopWords(const std::string& fileName);
 bool isStopWord(const std::string& word);
 void tokenizeText(const std::string& text, std::string words[], int& wordCount);
 void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize);
