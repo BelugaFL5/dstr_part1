@@ -3,7 +3,6 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-#include <set>      // For std::set
 #include <chrono>
 
 using namespace std;
@@ -73,31 +72,34 @@ void recordWords(const string& fileName, int govArticles, const HashTable& hashT
     outputFile.close();
 }
 
+// Function to check if the word is a stop word
+bool isStopWord(const std::string& word) {
+    return word == "the" || word == "and" || word == "for" || word == "that" || word == "this" ||
+           word == "with" || word == "from" || word == "was" || word == "are" || word == "has" || 
+           word == "have" || word == "had" || word == "you" || word == "they" || word == "their" ||
+           word == "not" || word == "who" || word == "said" || word == "his" || word == "one" || 
+           word == "were" || word == "about" || word == "our" || word == "what" || word == "just" ||
+           word == "into" || word == "more" || word == "its" || word == "which" || word == "but" || 
+           word == "been" || word == "would" || word == "all" || word == "will" || word == "when" ||
+           word == "before" || word == "than" || word == "then" || word == "over" || word == "other" ||
+           word == "some" || word == "also" || word == "could" || word == "only" || word == "may" ||
+           word == "many" || word == "most" || word == "these" || word == "any" || word == "like" ||
+           word == "two" || word == "her" || word == "him" || word == "did" || word == "why";
+}
 
-// Tokenize content into words
-void tokenizeText(const string& text, string words[], int& wordCount) {
-    // Define a set of stop words
-    static const std::set<std::string> stopWords = {
-        "the", "and", "for", "that", "this", "with", "from", "was", "are", "has", 
-        "have", "had", "you", "they", "their", "not", "who", "said", "his", "one", 
-        "were", "about", "our", "what", "just", "into", "more", "its", "which", 
-        "but", "been", "would", "all", "will", "when", "before", "than", "then",
-        "over", "other", "some", "also", "could", "only", "may", "many", "most",
-        "these", "any", "like", "two", "her", "his", "him", "did", "why"
-    };
-
-    stringstream ss(text);
-    string word;
+void tokenizeText(const std::string& text, std::string words[], int& wordCount) {
+    std::stringstream ss(text);
+    std::string word;
     wordCount = 0;
 
     while (ss >> word && wordCount < MAX_WORDS) {
-        transform(word.begin(), word.end(), word.begin(), ::tolower);  // Convert to lowercase
+        std::transform(word.begin(), word.end(), word.begin(), ::tolower);  // Convert to lowercase
 
         // Remove punctuation and special characters
-        word.erase(remove_if(word.begin(), word.end(), [](char c) { return !isalnum(c); }), word.end());
+        word.erase(std::remove_if(word.begin(), word.end(), [](char c) { return !isalnum(c); }), word.end());
 
         // Skip stop words and words that are too short or URLs
-        if (word.empty() || word.find("http") == 0 || word.length() < 3 || stopWords.find(word) != stopWords.end()) {
+        if (word.empty() || word.find("http") == 0 || word.length() < 3 || isStopWord(word)) {
             continue;
         }
 
@@ -166,7 +168,7 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
 
     // Calculate elapsed time
     double elapsedTime = calculateElapsedTime(start);
-    cout << "\nTime taken for hash search: " << elapsedTime << "s" << endl;
+    cout << "\nTime taken for hash search: " << fixed << setprecision(1) << elapsedTime << "s" << endl;
 
     // Calculate memory usage for hash table
     size_t memoryUsage = calcMemoryUsage(hashTable);
