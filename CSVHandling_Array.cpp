@@ -21,13 +21,31 @@ double calculateElapsedTime(std::chrono::high_resolution_clock::time_point start
 }
 
 // Function to calculate memory usage
-size_t calculateMemoryUsage(int fakeSize, int trueSize) {
+size_t calcMemoryUsage(int fakeSize, int trueSize) {
     // Approximate the size of the Article struct in bytes
     size_t articleSize = sizeof(Article); 
     size_t fakeMemory = fakeSize * articleSize;  // Memory used by fake articles
     size_t trueMemory = trueSize * articleSize;  // Memory used by true articles
     
     return fakeMemory + trueMemory;  // Total memory used
+}
+
+size_t calcMemoryUsage(HashTable& hashTable) {
+    size_t totalMemory = 0;
+
+    // Estimate the memory usage of the hash table's array
+    totalMemory += sizeof(hashTable.table);  // Memory for the array
+
+    // Add memory for each word and frequency in the hash table
+    for (int i = 0; i < HASH_TABLE_SIZE; i++) {
+        if (hashTable.table[i].isOccupied) {
+            // Estimate the memory for each word
+            totalMemory += sizeof(hashTable.table[i].word);  // Memory for the word string
+            totalMemory += sizeof(hashTable.table[i].frequency);  // Memory for the frequency count
+        }
+    }
+
+    return totalMemory;
 }
 
 // Function to trim spaces and special characters from strings
