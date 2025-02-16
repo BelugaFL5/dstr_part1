@@ -115,6 +115,10 @@
     "span": "cpp",
     "variant": "cpp",
     "cstdarg": "cpp",
+<<<<<<< HEAD
+    "text_encoding": "cpp"
+=======
     "set": "cpp"
+>>>>>>> 3ec604f77df3810f6b063789a100d6b8bf82d418
   }
 }
