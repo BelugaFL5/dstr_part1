@@ -63,8 +63,7 @@ void recordWords(const string& fileName, int govArticles, const HashTable& hashT
     // Write all words and their frequencies
     for (int i = 0; i < HASH_TABLE_SIZE; i++) {
         if (hashTable.table[i].isOccupied) {
-            outputFile << setw(20) << left << hashTable.table[i].word 
-                       << ": " << hashTable.table[i].frequency << " occurrences\n";
+            outputFile << setw(20) << left << hashTable.table[i].word << hashTable.table[i].frequency << " occurrences\n";
         }
     }
 
@@ -162,8 +161,8 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     cout << "\n(**) Found " << govArticles << " government-related articles" << endl;
     cout << "(*) Top words: " << endl;
     for (int i = 0; i < min(TOP_WORDS, topWordsCount); i++) {
-        cout << setw(20) << left << topWords[i].word
-             << ": " << topWords[i].frequency << " occurrences" << endl;
+        cout << left << setw(6) << i + 1;
+        cout << setw(15) << left << topWords[i].word << topWords[i].frequency << " occurrences" << endl;
     }
 
     // Call recordWords to store all words in a file
