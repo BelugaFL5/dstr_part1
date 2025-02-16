@@ -41,7 +41,8 @@ struct HashTable {
 
 std::chrono::high_resolution_clock::time_point startTimer();
 double calculateElapsedTime(std::chrono::high_resolution_clock::time_point start);
-size_t calculateMemoryUsage(int fakeSize, int trueSize);
+size_t calcMemoryUsage(int fakeSize, int trueSize);
+size_t calcMemoryUsage(HashTable& hashTable);
 string trim(string str);
 void convertMonthToShortForm(string& date);
 void parseCSVLine(const string& line, string fields[4]);

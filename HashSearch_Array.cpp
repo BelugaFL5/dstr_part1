@@ -169,6 +169,6 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     cout << "\nTime taken for hash search: " << elapsedTime << "s" << endl;
 
     // Calculate memory usage for hash table
-    size_t memoryUsage = calcMemoryUsage_Hash(hashTable);
+    size_t memoryUsage = calcMemoryUsage(hashTable);
     cout << "Memory usage for hash search: " << memoryUsage / (1024 * 1024) << "MB" << endl;  // Convert to MB
 }

@@ -194,6 +194,6 @@ void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int 
     cout << "\nTime taken for linear search: " << elapsedTime << "s" << endl;
 
     // After processing articles, display memory usage
-    size_t memoryUsage = calcMemoryUsage_Linear(fakeSize, trueSize);
+    size_t memoryUsage = calcMemoryUsage(fakeSize, trueSize);
     cout << "Memory usage taken for linear search: " << memoryUsage / (1024 * 1024) << "MB" << endl;
 }
