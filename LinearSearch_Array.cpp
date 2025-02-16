@@ -7,7 +7,7 @@ using namespace std;
 
 // Function to calculate and represent percentage (== for the percentage and -- for the remainder)
 void printDashes(double percentage) {
-    percentage = std::max(0.0, std::min(100.0, percentage)); // Ensure percentage is within 0 and 100
+    percentage = max(0.0, min(100.0, percentage)); // Ensure percentage is within 0 and 100
 
     int numEqualSigns = static_cast<int>(percentage);  // Number of '=' based on percentage
     int numDashSigns = 100 - numEqualSigns;  // Remaining dashes to fill the line

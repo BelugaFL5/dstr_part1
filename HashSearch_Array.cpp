@@ -73,33 +73,36 @@ void recordWords(const string& fileName, int govArticles, const HashTable& hashT
 }
 
 // Function to check if the word is a stop word
-bool isStopWord(const std::string& word) {
-    return word == "the" || word == "and" || word == "for" || word == "that" || word == "this" ||
-           word == "with" || word == "from" || word == "was" || word == "are" || word == "has" || 
-           word == "have" || word == "had" || word == "you" || word == "they" || word == "their" ||
-           word == "not" || word == "who" || word == "said" || word == "his" || word == "one" || 
-           word == "were" || word == "about" || word == "our" || word == "what" || word == "just" ||
-           word == "into" || word == "more" || word == "its" || word == "which" || word == "but" || 
-           word == "been" || word == "would" || word == "all" || word == "will" || word == "when" ||
-           word == "before" || word == "than" || word == "then" || word == "over" || word == "other" ||
-           word == "some" || word == "also" || word == "could" || word == "only" || word == "may" ||
-           word == "many" || word == "most" || word == "these" || word == "any" || word == "like" ||
-           word == "two" || word == "her" || word == "him" || word == "did" || word == "why";
+bool isStopWord(const string& word) {
+    return word == "about" || word == "all" || word == "also" || word == "and" || word == "any" || word == "after" || 
+           word == "are" || word == "been" || word == "before" || word == "but" || word == "cannot" || word == "can" || 
+           word == "could" || word == "did" || word == "for" || word == "from" || word == "have" || word == "said"||
+           word == "has" || word == "he" || word == "her" || word == "him" || word == "his" || word == "had" || word == "how" ||
+           word == "i" || word == "in" || word == "into" || word == "is" || word == "it" || word == "its" ||
+           word == "just" || word == "let" || word == "like" || word == "many" || word == "may" || 
+           word == "more" || word == "most" || word == "much" || word == "must" || word == "not" || word == "other" || 
+           word == "of" || word == "on" || word == "one" || word == "or" || word == "our" || word == "out" || word == "said" ||
+           word == "she" || word == "some" || word == "than" || word == "that" || word == "the" || word == "should" || word == "those" || 
+           word == "them" || word == "there" || word == "they" || word == "this" || word == "to" || word == "then" || word == "these" ||
+           word == "too" || word == "two" || word == "was" || word == "we" || word == "what" || word == "want" || word == "way" || 
+           word == "when" || word == "where" || word == "which" || word == "who" || word == "why" || word == "will" || 
+           word == "with" || word == "you" || word == "your";
 }
 
-void tokenizeText(const std::string& text, std::string words[], int& wordCount) {
-    std::stringstream ss(text);
-    std::string word;
+
+void tokenizeText(const string& text, string words[], int& wordCount) {
+    stringstream ss(text);
+    string word;
     wordCount = 0;
 
     while (ss >> word && wordCount < MAX_WORDS) {
-        std::transform(word.begin(), word.end(), word.begin(), ::tolower);  // Convert to lowercase
+        transform(word.begin(), word.end(), word.begin(), ::tolower);  // Convert to lowercase
 
         // Remove punctuation and special characters
-        word.erase(std::remove_if(word.begin(), word.end(), [](char c) { return !isalnum(c); }), word.end());
+        word.erase(remove_if(word.begin(), word.end(), [](char c) { return !isalnum(c); }), word.end());
 
-        // Skip stop words and words that are too short or URLs
-        if (word.empty() || word.find("http") == 0 || word.length() < 3 || isStopWord(word)) {
+        // Skip stop words, words that are too short, URLs, and numbers
+        if (word.empty() || word.find("http") == 0 || word.length() < 3 || isStopWord(word) || any_of(word.begin(), word.end(), ::isdigit)) {
             continue;
         }
 

@@ -12,7 +12,7 @@ struct Article {
 };
 
 // Constants
-const int HASH_TABLE_SIZE = 5000;
+const int HASH_TABLE_SIZE = 10007;  // A prime number to improve distribution
 const int MAX_WORDS = 20000;  // Maximum unique words to track
 const int TOP_WORDS = 200;    // Number of top words to display
 
