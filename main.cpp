@@ -20,11 +20,7 @@ int main() {
     linearSearch_Array(fakeArticles, fakeCount, trueArticles, trueCount); */
 
     // **Frequent words in government-related news**
-    cout << "debug point 1" << endl;
-    
     analyzeContent_Array(fakeArticles, fakeCount);
-
-    cout << "debug point 2" << endl;
 
     // Free dynamically allocated memory
     delete[] fakeArticles;
