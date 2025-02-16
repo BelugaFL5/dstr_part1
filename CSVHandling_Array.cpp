@@ -33,15 +33,17 @@ size_t calcMemoryUsage(int fakeSize, int trueSize) {
 size_t calcMemoryUsage(HashTable& hashTable) {
     size_t totalMemory = 0;
 
-    // Estimate the memory usage of the hash table's array
-    totalMemory += sizeof(hashTable.table);  // Memory for the array
+    // Add memory for the hash table
+    totalMemory += sizeof(hashTable.table); 
 
-    // Add memory for each word and frequency in the hash table
+    // Add memory for each word in the hash table
     for (int i = 0; i < HASH_TABLE_SIZE; i++) {
         if (hashTable.table[i].isOccupied) {
-            // Estimate the memory for each word
-            totalMemory += sizeof(hashTable.table[i].word);  // Memory for the word string
-            totalMemory += sizeof(hashTable.table[i].frequency);  // Memory for the frequency count
+            // Memory for the word string
+            totalMemory += sizeof(char) * (hashTable.table[i].word.size() + 1);  // +1 for null terminator
+
+            // Memory for the frequency count (int)
+            totalMemory += sizeof(hashTable.table[i].frequency);
         }
     }
 
