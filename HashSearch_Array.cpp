@@ -166,9 +166,9 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
 
     // Calculate elapsed time
     double elapsedTime = calculateElapsedTime(start);
-    cout << "\nTime taken for word frequency analysis: " << elapsedTime << "s" << endl;
+    cout << "\nTime taken for hash search: " << elapsedTime << "s" << endl;
 
     // Calculate memory usage for hash table
-    size_t memoryUsage = calculateMemoryUsage(hashTable);
-    cout << "Memory usage for word frequencies: " << memoryUsage / (1024 * 1024) << " MB" << endl;  // Convert to MB
+    size_t memoryUsage = calcMemoryUsage_Hash(hashTable);
+    cout << "Memory usage for hash search: " << memoryUsage / (1024 * 1024) << "MB" << endl;  // Convert to MB
 }

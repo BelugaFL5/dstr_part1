@@ -21,7 +21,7 @@ double calculateElapsedTime(std::chrono::high_resolution_clock::time_point start
 }
 
 // Function to calculate memory usage
-size_t calculateMemoryUsage(int fakeSize, int trueSize) {
+size_t calcMemoryUsage_Linear(int fakeSize, int trueSize) {
     // Approximate the size of the Article struct in bytes
     size_t articleSize = sizeof(Article); 
     size_t fakeMemory = fakeSize * articleSize;  // Memory used by fake articles
@@ -30,7 +30,7 @@ size_t calculateMemoryUsage(int fakeSize, int trueSize) {
     return fakeMemory + trueMemory;  // Total memory used
 }
 
-size_t calculateMemoryUsage(HashTable& hashTable) {
+size_t calcMemoryUsage_Hash(HashTable& hashTable) {
     size_t totalMemory = 0;
 
     // Estimate the memory usage of the hash table's array
