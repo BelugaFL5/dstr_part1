@@ -16,10 +16,10 @@ int main() {
     cout << "(*) Successfully stored " << fakeCount << " articles from data-fake.csv" << endl;
     cout << "(*) Successfully stored " << trueCount << " articles from data-true.csv" << endl;
 
-    // **Calculate percentage of fake political news for each month in 2016**
+    // **q2 Calculate percentage of fake political news for each month in 2016**
     linearSearch_Array(fakeArticles, fakeCount, trueArticles, trueCount); */
 
-    // **Frequent words in government-related news**
+    // **q3 Frequent words in government-related news**
     analyzeContent_Array(fakeArticles, fakeCount);
 
     // Free dynamically allocated memory
