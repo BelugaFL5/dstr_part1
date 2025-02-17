@@ -2,13 +2,14 @@
 #include <iomanip>
 #include "LinearSearch_Array.hpp"
 #include "HashSearch_Array.hpp"
+// #include "char_search.hpp"
 
 using namespace std;
 
 int main() {
     int fakeCount = 0, trueCount = 0;
 
-    // Read CSV and store articles in arrays
+    // Read CSV and store articles in arrays (5 calc and display total articles)
     Article* fakeArticles = readCSV("data-fake.csv", fakeCount, true);
     Article* trueArticles = readCSV("data-true.csv", trueCount, false);
 
