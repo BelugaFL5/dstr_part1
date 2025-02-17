@@ -16,7 +16,7 @@ std::chrono::high_resolution_clock::time_point startTimer() {
 }
 
 // Calculate elapsed time in seconds
-double calculateElapsedTime(std::chrono::high_resolution_clock::time_point start) {
+double calcElapsedTime(std::chrono::high_resolution_clock::time_point start) {
     using namespace std::chrono;
     auto end = high_resolution_clock::now();
     duration<double> duration = end - start;
