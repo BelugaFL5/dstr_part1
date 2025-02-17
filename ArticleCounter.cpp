@@ -37,7 +37,7 @@ void insertOrUpdateYearCount(YearCountNode*& head, int year) {
     YearCountNode* previous = nullptr;
 
     // Check if the year already exists in the list
-    while (current && current->year > year) {
+    while (current && current->year < year) {
         previous = current;
         current = current->next;
     }
