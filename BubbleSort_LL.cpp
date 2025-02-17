@@ -3,6 +3,7 @@
 #include <chrono>
 #include <algorithm>
 #include <fstream> 
+#include <stack>
 
 using namespace std;
 using namespace std::chrono;
@@ -25,7 +26,7 @@ int extractYear(const string& date) {
     return 0;  // Return 0 for invalid year format
 }
 
-// Bubble sort for linked list based on the year (Descending Order)
+// Bubble sort for linked list based on the year (Ascending Order)
 void bubbleSort(Article*& head) {
     if (!head || !head->next) return;
 
@@ -42,7 +43,7 @@ void bubbleSort(Article*& head) {
             int year2 = extractYear(ptr->next->date);
 
             // Only swap if both years are valid
-            if (year1 > 0 && year2 > 0 && year1 < year2) {
+            if (year1 > 0 && year2 > 0 && year1 < year2) { 
                 swap(ptr->title, ptr->next->title);
                 swap(ptr->date, ptr->next->date);
                 swap(ptr->subject, ptr->next->subject);
@@ -54,6 +55,7 @@ void bubbleSort(Article*& head) {
         lastSorted = ptr;
     } while (swapped);
 }
+
 
 
 int countValidArticles(Article* head) {
@@ -100,40 +102,49 @@ void measureTimeAndMemory(Article*& head) {
     std::cout << "Memory usage: " << memoryUsage / (1024 * 1024) << " MB" << std::endl;  // In MB
 }
 
-
 void storeSortedArticlesToFile(Article* head, const string& filename) {
-    ofstream outFile(filename);  // Open the file for writing
-    
+    ofstream outFile(filename);
+
     if (!outFile) {
         cerr << "Error opening file for writing!" << endl;
         return;
     }
 
-    // Write the articles to the file, grouped by year
+    stack<Article*> articleStack;  // Standard stack to hold articles
     Article* current = head;
-    int lastYear = -1;  // To keep track of the last year written
 
+    // Push all nodes onto the stack (since list is in descending order)
     while (current) {
-        int year = extractYear(current->date);  // Extract the year from the date
-        
-        // Only write the year section once per year
-        if (year != lastYear) {
-            if (lastYear != -1) {
-                outFile << endl;  // Add space between year sections
-            }
-            outFile << "Year: " << year << endl;  // Write the year
-            lastYear = year;
-        }
-
-        // Write the article title and date
-        outFile << "  Title: " << current->title << endl;
-        outFile << "  Date: " << current->date << endl;
-        outFile << "--------------------------------------" << endl;
-
+        articleStack.push(current);
         current = current->next;
     }
 
-    outFile.close();  // Close the file after writing
-    cout << "Sorted articles have been stored in " << filename << endl;
+    int lastYear = -1;
+
+    // Pop from stack to write in ascending order
+    while (!articleStack.empty()) {
+        Article* article = articleStack.top();
+        articleStack.pop();
+
+        int year = extractYear(article->date);
+
+        // Check if the year is different from the last year to organize the output
+        if (year != lastYear) {
+            if (lastYear != -1) {
+                outFile << endl;  // Space between different years
+            }
+            outFile << "Year: " << year << endl;
+            lastYear = year;
+        }
+
+        // Write article details to the file
+        outFile << "  Title: " << article->title << endl;
+        outFile << "  Date: " << article->date << endl;
+        outFile << "--------------------------------------" << endl;
+    }
+
+    outFile.close();
+    cout << "Sorted articles have been stored in " << filename << " in ascending order." << endl;
 }
+
 
