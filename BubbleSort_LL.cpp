@@ -1,7 +1,10 @@
 #include "bubblesort_LL.hpp"
 #include <iostream>
-using namespace std;
+#include <chrono>
+#include <algorithm>
 
+using namespace std;
+using namespace std::chrono;
 
 
 
@@ -20,9 +23,6 @@ int extractYear(const string& date) {
 
     return 0;  // Return 0 for invalid year format
 }
-
-
-
 
 // Bubble sort for linked list based on the year (Descending Order)
 void bubbleSort(Article*& head) {
@@ -76,3 +76,27 @@ int countArticles(Article* head) {
     }
     return count;
 }
+
+// Function to measure sorting time and memory usage (basic version)
+void measureTimeAndMemory(Article*& head) {
+    using namespace std::chrono;
+    
+    // Measure time
+    auto start = high_resolution_clock::now();
+    bubbleSort(head);
+    auto end = high_resolution_clock::now();
+    
+    // Calculate and display elapsed time
+    duration<double> duration = end - start;
+    std::cout << "Sorting took: " << duration.count() << " seconds" << std::endl;
+
+    // Count total articles
+    int totalValidArticles = countValidArticles(head);
+    std::cout << "Total valid Articles: " << totalValidArticles << std::endl;
+
+    // Estimate memory usage (size of each article object)
+    size_t memoryUsage = sizeof(Article) * totalValidArticles;
+    std::cout << "Memory usage: " << memoryUsage / (1024 * 1024) << " MB" << std::endl;  // In MB
+}
+
+

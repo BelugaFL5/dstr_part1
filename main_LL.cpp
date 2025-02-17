@@ -21,9 +21,13 @@ int main() {
     cout << "Fake News Dataset: " << countArticles(fakeHead) << " articles" << endl;
     cout << "True News Dataset: " << countArticles(trueHead) << " articles" << endl;
 
-    // Display valid articles with proper dates
-    cout << "Valid articles with proper dates for fake csv: " << countValidArticles(fakeHead) << endl;
-    cout << "Valid articles with proper dates for true csv: " << countValidArticles(trueHead) << endl;
+    // Measure time and memory for sorting articles in fake dataset
+    cout << "\nMeasuring time and memory for sorting fake dataset..." << endl;
+    measureTimeAndMemory(fakeHead);
+
+    // Measure time and memory for sorting articles in true dataset
+    cout << "\nMeasuring time and memory for sorting true dataset..." << endl;
+    measureTimeAndMemory(trueHead);
 
     // Sorting articles by year
     cout << "\nSorting articles by year..." << endl;
@@ -42,7 +46,3 @@ int main() {
     cout << "\n(*) Memory cleanup completed. Exiting program.\n";
     return 0;
 }
-
-
-// g++ -o main_LL main_LL.cpp LinkListHandling.cpp BubbleSort_LL.cpp ArticleCounter.cpp
-// ./main_LL
