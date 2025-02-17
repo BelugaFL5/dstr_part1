@@ -14,10 +14,6 @@ const int HASH_TABLE_SIZE = 10007;     // A prime number to improve distribution
 const int MAX_WORDS = 20000;          // Maximum unique words to track
 const int TOP_WORDS = 100;            // Number of top words to display
 
-// Stop words array and tracking variable
-extern char stopWords[MAX_STOPWORDS][MAX_WORD_LENGTH];  // Array to hold stop words
-extern int stopWordsCount;                             // To track the number of stop words loaded
-
 // Structure to store article data
 struct Article {
     string title, content, subject, date;

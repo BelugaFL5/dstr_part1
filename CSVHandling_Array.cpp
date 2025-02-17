@@ -8,7 +8,7 @@
 using namespace std;
 
 char stopWords[MAX_STOPWORDS][MAX_WORD_LENGTH];  // Array to hold stop words
-int stopWordsCount = 0;  // Initialize to 0 to track the number of stop words loaded
+int stopWordsCount = 0;  // Track the number of stop words loaded
 
 // Start time measurement
 std::chrono::high_resolution_clock::time_point startTimer() {

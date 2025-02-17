@@ -2,7 +2,6 @@
 #include <iomanip>
 #include "LinearSearch_Array.hpp"
 #include "HashSearch_Array.hpp"
-// #include "char_search.hpp"
 
 using namespace std;
 
@@ -17,11 +16,11 @@ int main() {
     cout << "(*) Successfully stored " << fakeCount << " articles from data-fake.csv" << endl;
     cout << "(*) Successfully stored " << trueCount << " articles from data-true.csv" << endl;
 
-    // **q2 Calculate percentage of fake political news for each month in 2016**
-    linearSearch_Array(fakeArticles, fakeCount, trueArticles, trueCount); */
+    // **q2 Calculate percentage of fake political news for each month in 2016** */
+    linearSearch_Array(fakeArticles, fakeCount, trueArticles, trueCount);
 
     // **q3 Frequent words in government-related news**
-    analyzeContent_Array(fakeArticles, fakeCount);
+    // analyzeContent_Array(fakeArticles, fakeCount);
 
     // Free dynamically allocated memory
     delete[] fakeArticles;
