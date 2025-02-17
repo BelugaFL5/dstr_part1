@@ -49,6 +49,7 @@ some
 than
 that
 the
+their
 them
 then
 these
@@ -67,6 +68,7 @@ were
 when
 where
 which
+while
 who
 why
 will
