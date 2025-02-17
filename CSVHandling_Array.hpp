@@ -12,7 +12,11 @@ const int MAX_STOPWORDS = 1000;        // Maximum number of stop words
 const int MAX_WORD_LENGTH = 20;        // Maximum length of a stop word
 const int HASH_TABLE_SIZE = 10007;     // A prime number to improve distribution
 const int MAX_WORDS = 20000;          // Maximum unique words to track
-const int TOP_WORDS = 100;            // Number of top words to display
+const int TOP_WORDS = 50;            // Number of top words to display
+
+// Stop words array and tracking variable
+extern char stopWords[MAX_STOPWORDS][MAX_WORD_LENGTH];  // Array to hold stop words
+extern int stopWordsCount;                             // To track the number of stop words loaded
 
 // Structure to store article data
 struct Article {
@@ -25,8 +29,7 @@ struct WordFreq {
     int frequency;
     bool isOccupied;  // Flag to track if slot is being used
 
-    // Constructor to initialize members
-    WordFreq() : word(""), frequency(0), isOccupied(false) {}
+    WordFreq() : word(""), frequency(0), isOccupied(false) {} // Constructor to initialize members
 };
 
 // Structure to store hash table with word frequencies
@@ -40,7 +43,7 @@ struct HashTable {
 
 // Function declarations
 std::chrono::high_resolution_clock::time_point startTimer();
-double calculateElapsedTime(std::chrono::high_resolution_clock::time_point start);
+double calcElapsedTime(std::chrono::high_resolution_clock::time_point start);
 size_t calcMemoryUsage(int fakeSize, int trueSize);
 size_t calcMemoryUsage(HashTable& hashTable);
 string trim(string str);

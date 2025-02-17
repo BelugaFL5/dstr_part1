@@ -190,7 +190,7 @@ void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int 
     cout << "\nPercentage of Political News Articles that are Fake in 2016: " << fixed << setprecision(1) << totalFakePoliticalPercentage << "%" << endl;
 
     // After processing articles, display elapsed time
-    double elapsedTime = calculateElapsedTime(start);
+    double elapsedTime = calcElapsedTime(start);
     cout << "\nTime taken for linear search: " << elapsedTime << "s" << endl;
 
     // After processing articles, display memory usage

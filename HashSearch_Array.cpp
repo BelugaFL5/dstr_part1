@@ -190,7 +190,7 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     recordWords("otherWords.txt", govArticles, hashTable);
 
     // Calculate elapsed time
-    double elapsedTime = calculateElapsedTime(start);
+    double elapsedTime = calcElapsedTime(start);
     cout << "\nTime taken for hash search: " << fixed << setprecision(1) << elapsedTime << "s" << endl;
 
     // Calculate memory usage in KB
