@@ -2,6 +2,7 @@
 #include <iostream>
 #include <chrono>
 #include <algorithm>
+#include <fstream> 
 
 using namespace std;
 using namespace std::chrono;
@@ -99,4 +100,40 @@ void measureTimeAndMemory(Article*& head) {
     std::cout << "Memory usage: " << memoryUsage / (1024 * 1024) << " MB" << std::endl;  // In MB
 }
 
+
+void storeSortedArticlesToFile(Article* head, const string& filename) {
+    ofstream outFile(filename);  // Open the file for writing
+    
+    if (!outFile) {
+        cerr << "Error opening file for writing!" << endl;
+        return;
+    }
+
+    // Write the articles to the file, grouped by year
+    Article* current = head;
+    int lastYear = -1;  // To keep track of the last year written
+
+    while (current) {
+        int year = extractYear(current->date);  // Extract the year from the date
+        
+        // Only write the year section once per year
+        if (year != lastYear) {
+            if (lastYear != -1) {
+                outFile << endl;  // Add space between year sections
+            }
+            outFile << "Year: " << year << endl;  // Write the year
+            lastYear = year;
+        }
+
+        // Write the article title and date
+        outFile << "  Title: " << current->title << endl;
+        outFile << "  Date: " << current->date << endl;
+        outFile << "--------------------------------------" << endl;
+
+        current = current->next;
+    }
+
+    outFile.close();  // Close the file after writing
+    cout << "Sorted articles have been stored in " << filename << endl;
+}
 

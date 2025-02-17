@@ -35,6 +35,10 @@ int main() {
     bubbleSort(trueHead);
     cout << "(*) Sorting completed!" << endl;
 
+    // Store sorted articles in text files
+    storeSortedArticlesToFile(fakeHead, "sorted_fake_articles.txt");
+    storeSortedArticlesToFile(trueHead, "sorted_true_articles.txt");
+
     // Display articles per year for both datasets using the modified linked list approach
     countArticlesPerYear(fakeHead, "Fake News");
     countArticlesPerYear(trueHead, "True News");
