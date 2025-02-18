@@ -104,7 +104,8 @@ void measureTimeAndMemory(Article*& head) {
 
 void storeSortedArticlesToFile(Article* head, const string& filename) {
     ofstream outFile(filename);
-
+//textfile
+//txtfile
     if (!outFile) {
         cerr << "Error opening file for writing!" << endl;
         return;
