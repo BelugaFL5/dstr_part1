@@ -53,13 +53,15 @@ bool isGov(const string& subject) {
 }
 
 // Function to write top words and their frequencies to a file
-void recordWords(const string& fileName, int govArticles, const HashTable& hashTable) {
+/* void recordWords(const string& fileName, int govArticles, const HashTable& hashTable) {
     ofstream outputFile(fileName);
 
     if (!outputFile.is_open()) {
         cout << "Error: Could not open output file for writing!" << endl;
         return;
     }
+
+    // USE SORT METHOD
 
     // Write all words and their frequencies
     for (int i = 0; i < HASH_TABLE_SIZE; i++) {
@@ -70,7 +72,7 @@ void recordWords(const string& fileName, int govArticles, const HashTable& hashT
 
     // Close the file
     outputFile.close();
-}
+} */
 
 // Function to load stop words from a file
 void loadStopWords(const string& fileName) {
@@ -234,7 +236,7 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     }
 
     // Call recordWords to store all words in a file
-    recordWords("otherWords.txt", govArticles, hashTable);
+    // recordWords("otherWords.txt", govArticles, hashTable);
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
