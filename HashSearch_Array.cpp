@@ -195,7 +195,7 @@ void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize)
         }
     }
     
-    // Use merge sort instead of bubble sort
+    // Use merge sort
     mergeSort(result, 0, resultSize - 1);
 }
 
