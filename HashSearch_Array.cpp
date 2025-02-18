@@ -126,6 +126,61 @@ void tokenizeText(const string& text, string words[], int& wordCount) {
         words[wordCount++] = word;
     }
 }
+//mergesort
+// Merge sort helper functions
+void merge(WordFreq arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    // Create temporary arrays
+    WordFreq L[n1], R[n2];
+
+    // Copy data to temporary arrays L[] and R[]
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[mid + 1 + j];
+
+    // Merge the temporary arrays back into arr[]
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i].frequency >= R[j].frequency) {
+            arr[k] = L[i];
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy the remaining elements of L[], if any
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    // Copy the remaining elements of R[], if any
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(WordFreq arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2; // To avoid overflow
+
+        // Sort first and second halves
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+
+        // Merge the sorted halves
+        merge(arr, left, mid, right);
+    }
+}
 
 // Convert hash table to sorted array for top words
 void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize) {
@@ -138,16 +193,8 @@ void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize)
         }
     }
     
-    // Sort using bubble sort
-    for (int i = 0; i < resultSize - 1; i++) {
-        for (int j = 0; j < resultSize - i - 1; j++) {
-            if (result[j].frequency < result[j + 1].frequency) {
-                WordFreq temp = result[j];
-                result[j] = result[j + 1];
-                result[j + 1] = temp;
-            }
-        }
-    }
+    // Use merge sort instead of bubble sort
+    mergeSort(result, 0, resultSize - 1);
 }
 
 // Main analysis function
