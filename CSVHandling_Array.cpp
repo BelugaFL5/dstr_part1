@@ -5,6 +5,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <iomanip>
 
 using namespace std;
 
@@ -57,6 +58,24 @@ size_t calcMemoryUsage(HashTable& hashTable) {
     }
 
     return memoryUsage;
+}
+
+// Function to calculate memory usage for storing articles
+size_t calcMemoryUsage(Article* articles, int count) {
+    size_t totalMemory = 0;
+
+    // Memory used by the Article array itself
+    totalMemory += count * sizeof(Article);  // Memory used by all Article structs
+
+    // Memory used by the string fields in each Article (title, content, subject, date)
+    for (int i = 0; i < count; i++) {
+        totalMemory += articles[i].title.capacity();    // Memory used by title string
+        totalMemory += articles[i].content.capacity();  // Memory used by content string
+        totalMemory += articles[i].subject.capacity();  // Memory used by subject string
+        totalMemory += articles[i].date.capacity();     // Memory used by date string
+    }
+
+    return totalMemory;
 }
 
 // Function to trim spaces and special characters from strings
@@ -178,7 +197,12 @@ Article* readCSV(const string& inputFile, int& count, bool trackIssues = false) 
 
     // Display elapsed time
     double elapsedTime = calcElapsedTime(start);
+    cout << fixed << setprecision(1);
     cout << "Time taken: " << elapsedTime << "s" << endl;
+
+    // Calculate and display memory usage in MB
+    size_t memoryUsage = calcMemoryUsage(articles, count);
+    cout << "Memory usage: " << memoryUsage / (1024.0 * 1024.0) << " MB" << endl;  // Convert bytes to MB
 
     loadingThread.detach();
     
