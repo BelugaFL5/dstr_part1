@@ -1,5 +1,6 @@
 #include "LinkListHandling.hpp"
 #include "BubbleSort_LL.hpp"
+#include "MergeSort_LL.hpp"
 #include "ArticleCounter.hpp"
 #include <iostream>
 
@@ -43,6 +44,24 @@ int main() {
     countArticlesPerYear(fakeHead, "Fake News");
     countArticlesPerYear(trueHead, "True News");
 
+    // Sorting articles by subject
+    cout << "\nSorting articles by subject..." << endl;
+    fakeHead = mergeSort(fakeHead);
+    trueHead = mergeSort(trueHead);
+    cout << "(*) Sorting by subject completed!" << endl;
+
+    // Measure Merge Sort time and memory for fake dataset
+    cout << "\nMeasuring time and memory for Merge Sort on fake dataset..." << endl;
+    measureMSTimeAndMemory(fakeHead);
+
+    // Measure Merge Sort time and memory for true dataset
+    cout << "\nMeasuring time and memory for Merge Sort on true dataset..." << endl;
+    measureMSTimeAndMemory(trueHead);
+
+    // Count and display articles per subject
+    countArticlesPerSubject(fakeHead, "Fake News");
+    countArticlesPerSubject(trueHead, "True News");
+
     // Cleanup linked lists
     deleteList(fakeHead);
     deleteList(trueHead);
@@ -50,3 +69,6 @@ int main() {
     cout << "\n(*) Memory cleanup completed. Exiting program.\n";
     return 0;
 }
+
+
+//main_LL main_LL.cpp LinkListHandling.cpp BubbleSort_LL.cpp ArticleCounter.cpp MergeSort_LL.cpp
