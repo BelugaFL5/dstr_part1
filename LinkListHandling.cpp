@@ -4,6 +4,10 @@
 #include <sstream>
 #include <algorithm>
 #include <cctype>
+#include <iostream>               
+#include <chrono>   
+#include "BubbleSort_LL.hpp"
+#include "MergeSort_LL.hpp"              
 
 using namespace std;
 
@@ -137,16 +141,38 @@ void deleteList(Article*& head) {
     }
 }
 
-// Main function
-// int main() {
-//     int fakeCount = 0, trueCount = 0;
+void measureTimeAndMemory(Article*& head, bool useMergeSort) {
+    using namespace std::chrono;
+    
+    auto start = high_resolution_clock::now();
 
-//     Article* fakeHead = readCSV("data-fake.csv", fakeCount, true); // Track issues only for data-fake.csv
-//     Article* trueHead = readCSV("data-true.csv", trueCount, false);
+    if (useMergeSort) {
+        head = mergeSort(head);  // If true, use Merge Sort
+    } else {
+        bubbleSort(head);        // If false, use Bubble Sort
+    }
 
-//     cout << "\n\n(**) READ INTO LINKED LIST:" << endl;
-//     cout << "(*) Successfully stored " << fakeCount << " articles from data-fake.csv" << endl;
-//     cout << "(*) Successfully stored " << trueCount << " articles from data-true.csv" << endl;
+    auto end = high_resolution_clock::now();
+    duration<double> duration = end - start;
+    
+    std::cout << "Sorting took: " << duration.count() << " seconds" << std::endl;
 
-//     return 0;
-// }
+    // Count total articles
+    int totalArticles = countArticles(head);
+    std::cout << "Total Articles: " << totalArticles << std::endl;
+
+    // Estimate memory usage
+    size_t memoryUsage = sizeof(Article) * totalArticles;
+    std::cout << "Memory usage: " << memoryUsage / (1024 * 1024) << " MB" << std::endl;
+}
+
+
+// Function to count total articles in a linked list
+int countArticles(Article* head) {
+    int count = 0;
+    while (head) {
+        count++;
+        head = head->next;
+    }
+    return count;
+}
