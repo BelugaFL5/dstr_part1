@@ -12,7 +12,7 @@ const int MAX_STOPWORDS = 1000;        // Maximum number of stop words
 const int MAX_WORD_LENGTH = 20;        // Maximum length of a stop word
 const int HASH_TABLE_SIZE = 15007;     // A prime number to improve distribution
 const int MAX_WORDS = 20000;          // Maximum unique words to track
-const int TOP_WORDS = 50;            // Number of top words to display
+const int TOP_WORDS = 10;            // Number of top words to display
 
 // Stop words array and tracking variable
 extern char stopWords[MAX_STOPWORDS][MAX_WORD_LENGTH];  // Array to hold stop words
@@ -42,6 +42,7 @@ struct HashTable {
 };
 
 // Function declarations
+void showLoadingIndicator();
 std::chrono::high_resolution_clock::time_point startTimer();
 double calcElapsedTime(std::chrono::high_resolution_clock::time_point start);
 size_t calcMemoryUsage(int fakeSize, int trueSize);

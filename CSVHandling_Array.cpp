@@ -4,11 +4,22 @@
 #include <algorithm>
 #include <string>
 #include <chrono>
+#include <thread>
 
 using namespace std;
 
 char stopWords[MAX_STOPWORDS][MAX_WORD_LENGTH];  // Array to hold stop words
 int stopWordsCount = 0;  // Track the number of stop words loaded
+
+void showLoadingIndicator() {
+    const char loadingChars[] = {'|', '/', '-', '\\'};
+    int i = 0;
+    while (true) {
+        std::cout << "\r" << loadingChars[i % 4] << std::flush;
+        i++;
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));  // Adjust the speed of rotation
+    }
+}
 
 // Start time measurement
 std::chrono::high_resolution_clock::time_point startTimer() {
@@ -113,6 +124,9 @@ void parseCSVLine(const string& line, string fields[4]) {
 
 // Function to read CSV and store articles in an array
 Article* readCSV(const string& inputFile, int& count, bool trackIssues = false) {
+    auto start = startTimer();  // Start time measurement
+    std::thread loadingThread(showLoadingIndicator);  // Start loading indicator
+
     ifstream file(inputFile);
     if (!file.is_open()) {
         cerr << "(!) Error: Could not open " << inputFile << endl;
@@ -160,7 +174,13 @@ Article* readCSV(const string& inputFile, int& count, bool trackIssues = false) 
     }
 
     file.close();
-    cout << "(*) Successfully stored " << count << " articles from " << inputFile << endl;
+    cout << "\n(*) Successfully stored " << count << " articles from " << inputFile << " into array." << endl;
+
+    // Display elapsed time
+    double elapsedTime = calcElapsedTime(start);
+    cout << "Time taken: " << elapsedTime << "s" << endl;
+
+    loadingThread.detach();
     
     return articles;
 }

@@ -2,6 +2,7 @@
 #include <regex>
 #include <iomanip>
 #include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -85,6 +86,7 @@ double totalNewsPercentage(Article fakeArr[], int fakeSize, Article trueArr[], i
 // Function to search for political news in 2016 and display the percentage for each month
 void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
     auto start = startTimer();  // Start time measurement
+    std::thread loadingThread(showLoadingIndicator);  // Start loading indicator
 
     int politicalArticles_perMonth[12] = {0}; // Track total political articles (fake + true) per month
     int fakePoliticalArticles_perMonth[12] = {0}; // Track only fake political articles per month
@@ -196,4 +198,6 @@ void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int 
     // After processing articles, display memory usage
     size_t memoryUsage = calcMemoryUsage(fakeSize, trueSize);
     cout << "Memory usage taken for linear search: " << memoryUsage / (1024.0 * 1024.0) << "MB" << endl;
+
+    loadingThread.detach();
 }

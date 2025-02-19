@@ -5,6 +5,7 @@
 #include <fstream>
 #include <chrono>
 #include <string.h>
+#include <thread>
 
 using namespace std;
 
@@ -207,6 +208,7 @@ void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize)
 // Main analysis function
 void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     auto start = startTimer(); // Start time measurement
+    std::thread loadingThread(showLoadingIndicator);  // Start loading indicator
 
     // Load stop words from stopWords.txt
     loadStopWords("stopWords.txt");
@@ -250,4 +252,6 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     // Calculate memory usage in KB
     size_t memoryUsage = calcMemoryUsage(hashTable);
     cout << "Memory usage: " << memoryUsage / (1024.0 * 1024.0) << "MB" << endl;
+
+    loadingThread.detach();
 }
