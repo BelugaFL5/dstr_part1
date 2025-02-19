@@ -10,7 +10,7 @@ using namespace std;
 // Constants
 const int MAX_STOPWORDS = 1000;        // Maximum number of stop words
 const int MAX_WORD_LENGTH = 20;        // Maximum length of a stop word
-const int HASH_TABLE_SIZE = 10007;     // A prime number to improve distribution
+const int HASH_TABLE_SIZE = 15007;     // A prime number to improve distribution
 const int MAX_WORDS = 20000;          // Maximum unique words to track
 const int TOP_WORDS = 50;            // Number of top words to display
 

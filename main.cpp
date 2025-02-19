@@ -15,7 +15,7 @@ int main() {
     Article* trueArticles = readCSV("data-true.csv", trueCount, false);
 
     // Calculate percentage of fake political news for each month in 2016
-    linearSearch_Array(fakeArticles, fakeCount, trueArticles, trueCount);
+    // linearSearch_Array(fakeArticles, fakeCount, trueArticles, trueCount);
 
     // Frequent words in government-related news
     analyzeContent_Array(fakeArticles, fakeCount);

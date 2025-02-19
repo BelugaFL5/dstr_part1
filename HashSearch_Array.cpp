@@ -53,7 +53,7 @@ bool isGov(const string& subject) {
 }
 
 // Function to write top words and their frequencies to a file
-/* void recordWords(const string& fileName, int govArticles, const HashTable& hashTable) {
+void recordWords(const string& fileName, WordFreq wordList[], int startIdx, int endIdx) {
     ofstream outputFile(fileName);
 
     if (!outputFile.is_open()) {
@@ -61,18 +61,15 @@ bool isGov(const string& subject) {
         return;
     }
 
-    // USE SORT METHOD
-
-    // Write all words and their frequencies
-    for (int i = 0; i < HASH_TABLE_SIZE; i++) {
-        if (hashTable.table[i].isOccupied) {
-            outputFile << setw(20) << left << hashTable.table[i].word << hashTable.table[i].frequency << " occurrences\n";
-        }
+    // Write top words (from startIdx to endIdx) and their frequencies to the file
+    for (int i = startIdx; i < endIdx && i < MAX_WORDS; i++) {
+        outputFile << setw(30) << left << wordList[i].word << wordList[i].frequency << " occurrences" << endl;
     }
 
     // Close the file
     outputFile.close();
-} */
+}
+
 
 // Function to load stop words from a file
 void loadStopWords(const string& fileName) {
@@ -128,9 +125,9 @@ void tokenizeText(const string& text, string words[], int& wordCount) {
         words[wordCount++] = word;
     }
 }
-//mergesort
+
 // Merge sort helper functions
-void merge(WordFreq arr[], int left, int mid, int right) {
+/* void merge(WordFreq arr[], int left, int mid, int right) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
 
@@ -169,9 +166,9 @@ void merge(WordFreq arr[], int left, int mid, int right) {
         j++;
         k++;
     }
-}
+} */
 
-void mergeSort(WordFreq arr[], int left, int right) {
+/* void mergeSort(WordFreq arr[], int left, int right) {
     if (left < right) {
         int mid = left + (right - left) / 2; // To avoid overflow
 
@@ -182,9 +179,9 @@ void mergeSort(WordFreq arr[], int left, int right) {
         // Merge the sorted halves
         merge(arr, left, mid, right);
     }
-}
+} */
 
-// Convert hash table to sorted array for top words
+//Convert hash table to sorted array for top words
 void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize) {
     resultSize = 0;
     
@@ -195,8 +192,16 @@ void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize)
         }
     }
     
-    // Use merge sort
-    mergeSort(result, 0, resultSize - 1);
+    // Sort the result array by frequency in descending order using bubble sort
+    for (int i = 0; i < resultSize - 1; i++) {
+        for (int j = 0; j < resultSize - i - 1; j++) {
+            if (result[j].frequency < result[j + 1].frequency) {
+                WordFreq temp = result[j];
+                result[j] = result[j + 1];
+                result[j + 1] = temp;
+            }
+        }
+    }
 }
 
 // Main analysis function
@@ -236,13 +241,13 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
     }
 
     // Call recordWords to store all words in a file
-    // recordWords("otherWords.txt", govArticles, hashTable);
+    recordWords("nextTopWords.txt", topWords, TOP_WORDS, topWordsCount);
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
     cout << "\nTime taken for hash search: " << fixed << setprecision(1) << elapsedTime << "s" << endl;
 
     // Calculate memory usage in KB
-    size_t memoryUsageKB = calcMemoryUsage(hashTable);
-    cout << "Memory usage: " << memoryUsageKB / 1024 << " KB" << endl;  // Convert to KB
+    size_t memoryUsage = calcMemoryUsage(hashTable);
+    cout << "Memory usage: " << memoryUsage / (1024.0 * 1024.0) << "MB" << endl;
 }
