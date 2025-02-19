@@ -3,7 +3,6 @@
 #include <chrono>
 #include <algorithm>
 #include <fstream> 
-#include <stack>
 
 using namespace std;
 using namespace std::chrono;
@@ -104,48 +103,56 @@ void measureTimeAndMemory(Article*& head) {
 
 void storeSortedArticlesToFile(Article* head, const string& filename) {
     ofstream outFile(filename);
-//textfile
-//txtfile
+
     if (!outFile) {
         cerr << "Error opening file for writing!" << endl;
         return;
     }
 
-    stack<Article*> articleStack;  // Standard stack to hold articles
-    Article* current = head;
+    if (!head) {
+        cerr << "No articles to write!" << endl;
+        return;
+    }
 
-    // Push all nodes onto the stack (since list is in descending order)
-    while (current) {
-        articleStack.push(current);
-        current = current->next;
+    // Find the last node (tail) to start writing from the end
+    Article* tail = head;
+    while (tail->next) {
+        tail = tail->next;
     }
 
     int lastYear = -1;
 
-    // Pop from stack to write in ascending order
-    while (!articleStack.empty()) {
-        Article* article = articleStack.top();
-        articleStack.pop();
+    // Traverse the list from tail to head in reverse order
+    while (tail) {
+        int year = extractYear(tail->date);
 
-        int year = extractYear(article->date);
-
-        // Check if the year is different from the last year to organize the output
-        if (year != lastYear) {
-            if (lastYear != -1) {
-                outFile << endl;  // Space between different years
+        // Ensure we only print valid years
+        if (year > 0) {
+            if (year != lastYear) {
+                if (lastYear != -1) {
+                    outFile << endl;  // Space between different years
+                }
+                outFile << "Year: " << year << endl;
+                lastYear = year;
             }
-            outFile << "Year: " << year << endl;
-            lastYear = year;
+
+            outFile << "  Title: " << tail->title << endl;
+            outFile << "  Date: " << tail->date << endl;
+            outFile << "--------------------------------------" << endl;
         }
 
-        // Write article details to the file
-        outFile << "  Title: " << article->title << endl;
-        outFile << "  Date: " << article->date << endl;
-        outFile << "--------------------------------------" << endl;
+        // Move tail backwards to the previous node
+        Article* prev = head;
+        while (prev && prev->next != tail) {
+            prev = prev->next;
+        }
+        tail = (tail == head) ? nullptr : prev;  // Stop when we reach the head
     }
 
     outFile.close();
     cout << "Sorted articles have been stored in " << filename << " in ascending order." << endl;
 }
+
+
 
 
