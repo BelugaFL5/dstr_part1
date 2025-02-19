@@ -7,7 +7,7 @@
 // Function to sort articles by subject using Merge Sort
 Article* mergeSort(Article* head);
 void countArticlesPerSubject(Article* head, const std::string& datasetName);
-void measureMSTimeAndMemory(Article*& head);
 int countArticles(Article* head);
+void storeSortedArticlesBySubject(Article* head, const string& filename);
 
 #endif // MERGESORT_LL_HPP

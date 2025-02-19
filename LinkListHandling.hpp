@@ -20,6 +20,8 @@ void parseCSVLine(const string& line, string fields[4]);
 Article* readCSV(const string& inputFile, int& count, bool trackIssues = false);
 void displayArticles(Article* head, int count);
 void deleteList(Article*& head);
+void measureTimeAndMemory(Article*& head, bool useMergeSort);
+int countArticles(Article* head);
 
 
 #endif // LinkListHandling.HPP
