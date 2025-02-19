@@ -1,13 +1,13 @@
 #ifndef LINEARSEARCH_ARRAY_HPP
 #define LINEARSEARCH_ARRAY_HPP
 
+#include "CSVHandling_Array.hpp"
 #include <iostream>
 #include <string>
-#include "CSVHandling_Array.hpp" // for Article struct
 
 using namespace std;
 
-// Declare function prototypes
+// Function declarations
 int extractYear(string date);
 bool isPolitical(const string& subject);
 void printDashes(double percentage);

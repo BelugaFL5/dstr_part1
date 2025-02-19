@@ -18,4 +18,5 @@ void tokenizeText(const std::string& text, std::string words[], int& wordCount);
 void getTopWords(const HashTable& hashTable, WordFreq result[], int& resultSize);
 void analyzeContent_Array(Article fakeArr[], int fakeSize);
 void merge(WordFreq arr[], int left, int mid, int right);
+
 #endif // HASHSEARCH_ARRAY_HPP

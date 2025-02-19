@@ -46,7 +46,7 @@ int extractYear(string date) {
 
 // Function to check if the article is political
 bool isPolitical(const string& subject) {
-    return regex_search(subject, regex("politics", regex_constants::icase));
+    return regex_search(subject, regex("politics", regex_constants::icase));  // Check for 'politics' keyword
 }
 
 // Function to calculate the total fake political news percentage from fake articles over total fake and true articles in 2016
@@ -80,7 +80,7 @@ double totalNewsPercentage(Article fakeArr[], int fakeSize, Article trueArr[], i
         fakePoliticalPercentage = (static_cast<double>(totalFakePoliticalArticles) / totalPoliticalArticles) * 100.0;
     }
 
-    return fakePoliticalPercentage;
+    return fakePoliticalPercentage;  // Return the percentage of fake political news
 }
 
 // Function to search for political news in 2016 and display the percentage for each month
@@ -191,13 +191,13 @@ void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int 
     double totalFakePoliticalPercentage = totalNewsPercentage(fakeArr, fakeSize, trueArr, trueSize);
     cout << "\nPercentage of Political News Articles that are Fake in 2016: " << fixed << setprecision(1) << totalFakePoliticalPercentage << "%" << endl;
 
-    // After processing articles, display elapsed time
+    // Display elapsed time
     double elapsedTime = calcElapsedTime(start);
     cout << "\nTime taken for linear search: " << elapsedTime << "s" << endl;
 
-    // After processing articles, display memory usage
+    // Display memory usage
     size_t memoryUsage = calcMemoryUsage(fakeSize, trueSize);
     cout << "Memory usage taken for linear search: " << memoryUsage / (1024.0 * 1024.0) << "MB" << endl;
 
-    loadingThread.detach();
+    loadingThread.detach(); // The loading indicator runs while the function executes
 }

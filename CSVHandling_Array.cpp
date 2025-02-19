@@ -12,11 +12,12 @@ using namespace std;
 char stopWords[MAX_STOPWORDS][MAX_WORD_LENGTH];  // Array to hold stop words
 int stopWordsCount = 0;  // Track the number of stop words loaded
 
+// Function to show loading indicator while a function is running
 void showLoadingIndicator() {
     const char loadingChars[] = {'|', '/', '-', '\\'};
     int i = 0;
     while (true) {
-        std::cout << "\r" << loadingChars[i % 4] << std::flush;
+        std::cout << "\r" << loadingChars[i % 4] << std::flush;  // Show loading indicator in a rotating sequence
         i++;
         std::this_thread::sleep_for(std::chrono::milliseconds(200));  // Adjust the speed of rotation
     }
@@ -35,17 +36,17 @@ double calcElapsedTime(std::chrono::high_resolution_clock::time_point start) {
     return duration.count();
 }
 
-// Function to calculate memory usage
+// Function to calculate memory usage for articles
 size_t calcMemoryUsage(int fakeSize, int trueSize) {
     // Approximate the size of the Article struct in bytes
     size_t articleSize = sizeof(Article); 
     size_t fakeMemory = fakeSize * articleSize;  // Memory used by fake articles
     size_t trueMemory = trueSize * articleSize;  // Memory used by true articles
     
-    return fakeMemory + trueMemory;  // Total memory used
+    return fakeMemory + trueMemory;  // Total memory used by articles
 }
 
-// Function to calculate memory usage
+// Function to calculate memory usage for the hash table
 size_t calcMemoryUsage(HashTable& hashTable) {
     size_t memoryUsage = sizeof(hashTable);  // Base size of the hash table object
 
@@ -67,7 +68,7 @@ size_t calcMemoryUsage(Article* articles, int count) {
     // Memory used by the Article array itself
     totalMemory += count * sizeof(Article);  // Memory used by all Article structs
 
-    // Memory used by the string fields in each Article (title, content, subject, date)
+    // Memory used by the string fields in Article
     for (int i = 0; i < count; i++) {
         totalMemory += articles[i].title.capacity();    // Memory used by title string
         totalMemory += articles[i].content.capacity();  // Memory used by content string
@@ -94,7 +95,7 @@ string trim(string str) {
     return str;
 }
 
-// Function to convert full month names to short forms manually
+// Function to convert full month names to short forms
 void convertMonthToShortForm(string& date) {
     if (date.find("january") != string::npos) date.replace(date.find("january"), 7, "jan");
     else if (date.find("february") != string::npos) date.replace(date.find("february"), 8, "feb");
@@ -156,7 +157,7 @@ Article* readCSV(const string& inputFile, int& count, bool trackIssues = false) 
     count = 0;
     int rowNumber = 0, totalRows = 0;
 
-    // Always skip first (header) row
+    // Skip first (header) row
     getline(file, line);
 
     // Determine the number of lines in the file (excluding header)
@@ -200,11 +201,11 @@ Article* readCSV(const string& inputFile, int& count, bool trackIssues = false) 
     cout << fixed << setprecision(1);
     cout << "Time taken: " << elapsedTime << "s" << endl;
 
-    // Calculate and display memory usage in MB
+    // Display memory usage
     size_t memoryUsage = calcMemoryUsage(articles, count);
-    cout << "Memory usage: " << memoryUsage / (1024.0 * 1024.0) << " MB" << endl;  // Convert bytes to MB
+    cout << "Memory usage: " << memoryUsage / (1024.0 * 1024.0) << " MB" << endl;
 
-    loadingThread.detach();
+    loadingThread.detach(); // The loading indicator runs while the function executes
     
     return articles;
 }
