@@ -20,6 +20,9 @@ int main() {
     // Frequent words in government-related news
     analyzeContent_Array(fakeArticles, fakeCount);
 
+    // Display search menu
+    searchMenu(fakeArticles, fakeCount, trueArticles, trueCount);
+
     // Free dynamically allocated memory
     delete[] fakeArticles;
     delete[] trueArticles;

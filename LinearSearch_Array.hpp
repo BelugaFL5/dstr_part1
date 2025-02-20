@@ -8,10 +8,13 @@
 using namespace std;
 
 // Function declarations
-int extractYear(string date);
-bool isPolitical(const string& subject);
 void printDashes(double percentage);
+int extractYear(string date);
+bool isCategory(const string& subject, const string& category);
 double totalNewsPercentage(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize);
 void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize);
+void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize);
+void linearSearchByYear(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize);
+void searchMenu(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize);
 
 #endif // LINEARSEARCH_ARRAY_HPP

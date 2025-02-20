@@ -4,24 +4,12 @@
 #include <algorithm>
 #include <string>
 #include <chrono>
-#include <thread>
 #include <iomanip>
 
 using namespace std;
 
 char stopWords[MAX_STOPWORDS][MAX_WORD_LENGTH];  // Array to hold stop words
 int stopWordsCount = 0;  // Track the number of stop words loaded
-
-// Function to show loading indicator while a function is running
-void showLoadingIndicator() {
-    const char loadingChars[] = {'|', '/', '-', '\\'};
-    int i = 0;
-    while (true) {
-        std::cout << "\r" << loadingChars[i % 4] << std::flush;  // Show loading indicator in a rotating sequence
-        i++;
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));  // Adjust the speed of rotation
-    }
-}
 
 // Start time measurement
 std::chrono::high_resolution_clock::time_point startTimer() {
@@ -57,7 +45,6 @@ size_t calcMemoryUsage(HashTable& hashTable) {
             memoryUsage += hashTable.table[i].word.capacity();  // Memory used by the string inside WordFreq
         }
     }
-
     return memoryUsage;
 }
 
@@ -145,7 +132,6 @@ void parseCSVLine(const string& line, string fields[4]) {
 // Function to read CSV and store articles in an array
 Article* readCSV(const string& inputFile, int& count, bool trackIssues = false) {
     auto start = startTimer();  // Start time measurement
-    std::thread loadingThread(showLoadingIndicator);  // Start loading indicator
 
     ifstream file(inputFile);
     if (!file.is_open()) {
@@ -204,8 +190,6 @@ Article* readCSV(const string& inputFile, int& count, bool trackIssues = false) 
     // Display memory usage
     size_t memoryUsage = calcMemoryUsage(articles, count);
     cout << "Memory usage: " << memoryUsage / (1024.0 * 1024.0) << " MB" << endl;
-
-    loadingThread.detach(); // The loading indicator runs while the function executes
     
     return articles;
 }

@@ -2,7 +2,7 @@
 #include <regex>
 #include <iomanip>
 #include <chrono>
-#include <thread>
+#include <fstream>
 
 using namespace std;
 
@@ -44,9 +44,12 @@ int extractYear(string date) {
     }
 }
 
-// Function to check if the article is political
-bool isPolitical(const string& subject) {
-    return regex_search(subject, regex("politics", regex_constants::icase));  // Check for 'politics' keyword
+// Function to check if the article belongs to a specific category
+bool isCategory(const string& subject, const string& category) {
+    if (category == "news") {
+        return regex_search(subject, regex("\\bnews\\b", regex_constants::icase)); // Ensure "news" is an exact match
+    }
+    return regex_search(subject, regex(category, regex_constants::icase));
 }
 
 // Function to calculate the total fake political news percentage from fake articles over total fake and true articles in 2016
@@ -57,7 +60,7 @@ double totalNewsPercentage(Article fakeArr[], int fakeSize, Article trueArr[], i
     // Process fake articles
     for (int i = 0; i < fakeSize; i++) {
         if (extractYear(fakeArr[i].date) == 2016) {
-            if (isPolitical(fakeArr[i].subject)) {
+            if (isCategory(fakeArr[i].subject, "politics")) {
                 totalFakePoliticalArticles++;
             }
         }
@@ -66,7 +69,7 @@ double totalNewsPercentage(Article fakeArr[], int fakeSize, Article trueArr[], i
     // Process true articles
     for (int i = 0; i < trueSize; i++) {
         if (extractYear(trueArr[i].date) == 2016) {
-            if (isPolitical(trueArr[i].subject)) {
+            if (isCategory(trueArr[i].subject, "politics")) {
                 totalTruePoliticalArticles++;
             }
         }
@@ -86,14 +89,13 @@ double totalNewsPercentage(Article fakeArr[], int fakeSize, Article trueArr[], i
 // Function to search for political news in 2016 and display the percentage for each month
 void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
     auto start = startTimer();  // Start time measurement
-    std::thread loadingThread(showLoadingIndicator);  // Start loading indicator
 
     int politicalArticles_perMonth[12] = {0}; // Track total political articles (fake + true) per month
     int fakePoliticalArticles_perMonth[12] = {0}; // Track only fake political articles per month
 
     // Process fake political articles
     for (int i = 0; i < fakeSize; i++) {
-        if (extractYear(fakeArr[i].date) == 2016 && isPolitical(fakeArr[i].subject)) {
+        if (extractYear(fakeArr[i].date) == 2016 && isCategory(fakeArr[i].subject, "politics")) {
             size_t firstSpace = fakeArr[i].date.find(' ');
             string month = fakeArr[i].date.substr(0, firstSpace);
             
@@ -150,7 +152,7 @@ void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int 
 
     // Process true political articles
     for (int i = 0; i < trueSize; i++) {
-        if (extractYear(trueArr[i].date) == 2016 && isPolitical(trueArr[i].subject)) {
+        if (extractYear(trueArr[i].date) == 2016 && isCategory(trueArr[i].subject, "politics")) {
             size_t firstSpace = trueArr[i].date.find(' ');
             string month = trueArr[i].date.substr(0, firstSpace);
             
@@ -198,6 +200,133 @@ void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int 
     // Display memory usage
     size_t memoryUsage = calcMemoryUsage(fakeSize, trueSize);
     cout << "Memory usage taken for linear search: " << memoryUsage / (1024.0 * 1024.0) << "MB" << endl;
+}
 
-    loadingThread.detach(); // The loading indicator runs while the function executes
+// Function to search for news articles by category and save results to a file
+void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
+    string fakeCategories[] = {"government", "left", "middle", "us", "news", "politics"};
+    string trueCategories[] = {"politics", "world"};
+    int categoryChoice, searchType;
+
+    cout << "\nSearch through:\n";
+    cout << "1. Fake Articles\n";
+    cout << "2. True Articles\n";
+    cout << "Enter choice: ";
+    cin >> searchType;
+
+    Article* arr;
+    int size;
+    string selectedCategory;
+
+    if (searchType == 1) {
+        arr = fakeArr;
+        size = fakeSize;
+
+        cout << "\nSelect Category:\n";
+        cout << "1. Government News\n";
+        cout << "2. Left News\n";
+        cout << "3. Middle East News\n";
+        cout << "4. US News\n";
+        cout << "5. General News\n";
+        cout << "6. Politics\n";
+        cout << "Enter choice: ";
+        cin >> categoryChoice;
+
+        switch (categoryChoice) {
+            case 1: selectedCategory = "government"; break;
+            case 2: selectedCategory = "left"; break;
+            case 3: selectedCategory = "middle"; break;
+            case 4: selectedCategory = "us"; break;
+            case 5: selectedCategory = "news"; break;
+            case 6: selectedCategory = "politics"; break;
+            default: cout << "Invalid choice. Exiting.\n"; return;
+        }
+    } 
+    else if (searchType == 2) {
+        arr = trueArr;
+        size = trueSize;
+
+        cout << "\nSelect Category:\n";
+        cout << "1. Politics News\n";
+        cout << "2. World New\n";
+        cout << "Enter choice: ";
+        cin >> categoryChoice;
+
+        switch (categoryChoice) {
+            case 1: selectedCategory = "politics"; break;
+            case 2: selectedCategory = "world"; break;
+            default: cout << "Invalid choice. Exiting.\n"; return;
+        }
+    } 
+    else {
+        cout << "Invalid choice. Exiting.\n";
+        return;
+    }
+
+    ofstream outFile("searchResults.txt");
+    for (int i = 0; i < size; i++) {
+        if (isCategory(arr[i].subject, selectedCategory)) {
+            outFile << "Title: " << arr[i].title << "\n";
+            outFile << "Category: " << arr[i].subject << "\n";
+            outFile << "Date: " << arr[i].date << "\n\n";
+        }
+    }
+    outFile.close();
+    cout << "Results saved to searchResults.txt\n";
+}
+
+// Function to search for news articles by year and save results to a files
+void linearSearchByYear(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
+    int searchYear, searchType;
+    cout << "\nEnter the year to search: ";
+    cin >> searchYear;
+
+    cout << "\nSearch through:\n";
+    cout << "1. Fake Articles\n";
+    cout << "2. True Articles\n";
+    cout << "Enter choice: ";
+    cin >> searchType;
+
+    Article* arr;
+    int size;
+
+    if (searchType == 1) {
+        arr = fakeArr;
+        size = fakeSize;
+    } else if (searchType == 2) {
+        arr = trueArr;
+        size = trueSize;
+    } else {
+        cout << "Invalid choice. Exiting.\n";
+        return;
+    }
+
+    ofstream outFile("searchResults.txt");
+    for (int i = 0; i < size; i++) {
+        if (extractYear(arr[i].date) == searchYear) {
+            outFile << "Title: " << arr[i].title << "\n";
+            outFile << "Category: " << arr[i].subject << "\n";
+            outFile << "Date: " << arr[i].date << "\n\n";
+        }
+    }
+    outFile.close();
+    cout << "Results saved to searchResults.txt\n";
+}
+
+// Function to allow user to select search mode
+void searchMenu(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
+    int choice;
+    cout << "Select search mode:\n";
+    cout << "1. Search by Category\n";
+    cout << "2. Search by Year\n";
+    cout << "Enter choice: ";
+    cin >> choice;
+
+    if (choice == 1) {
+        linearSearchByCategory(fakeArr, fakeSize, trueArr, trueSize);
+    } else if (choice == 2) {
+        linearSearchByYear(fakeArr, fakeSize, trueArr, trueSize);
+    } else {
+        cout << "Invalid choice. Exiting.\n";
+    }
 }

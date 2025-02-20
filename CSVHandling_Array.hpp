@@ -40,7 +40,6 @@ struct HashTable {
 };
 
 // Function declarations
-void showLoadingIndicator();
 std::chrono::high_resolution_clock::time_point startTimer();
 double calcElapsedTime(std::chrono::high_resolution_clock::time_point start);
 size_t calcMemoryUsage(int fakeSize, int trueSize);
