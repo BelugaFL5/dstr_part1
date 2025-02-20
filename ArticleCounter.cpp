@@ -2,7 +2,7 @@
 #include "bubblesort_LL.hpp"  
 #include <iostream>
 
-// Function to count articles per year using a linked list instead of map
+// Function to count articles per year using a linked list 
 void countArticlesPerYear(Article* head, const std::string& datasetName) {
     YearCountNode* yearHead = nullptr; // Linked list to store year count
 
