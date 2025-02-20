@@ -10,7 +10,7 @@ int main() {
     int fakeCount = 0, trueCount = 0;
 
     cout << "\n(**) READ INTO ARRAY:" << endl;
-    // Read CSV and store articles in arrays; and display number of articles
+    // Read CSV and store articles into array, and display number of articles
     Article* fakeArticles = readCSV("data-fake.csv", fakeCount, true);
     Article* trueArticles = readCSV("data-true.csv", trueCount, false);
 

@@ -202,11 +202,110 @@ void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int 
     cout << "Memory usage taken for linear search: " << memoryUsage / (1024.0 * 1024.0) << "MB" << endl;
 }
 
+int getMonthValue(const string& month) {
+    const string months[] = {
+        "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
+    };
+    for (int i = 0; i < 12; i++) {
+        if (months[i] == month) return i + 1;
+    }
+    return 0;
+}
+
+void saveSortedResults(Article articles[], int size, const string& selectedCategory, int searchYear = -1) {
+    auto startSearch = startTimer();  // Start time measurement for searching
+
+    // Dynamically allocate an array to store matching articles
+    Article* filteredArticles = new Article[size];
+    int filteredSize = 0;  
+
+    // Check if we even have any articles to process
+    if (size == 0) {
+        delete[] filteredArticles;
+        return;
+    }
+
+    // Filter articles by category and/or year
+    for (int i = 0; i < size; i++) {
+        bool matchesCategory = selectedCategory.empty() || isCategory(articles[i].subject, selectedCategory);
+        bool matchesYear = (searchYear == -1) || (extractYear(articles[i].date) == searchYear);
+
+        if (matchesCategory && matchesYear) {
+            filteredArticles[filteredSize++] = articles[i];
+        }
+    }
+
+    // Calculate and print searching time **before starting sorting**
+    double searchTime = calcElapsedTime(startSearch);
+    cout << "\nTime taken for searching: " << fixed << setprecision(1) << searchTime << "s" << endl;
+
+    // Check if any articles matched before sorting
+    if (filteredSize == 0) {
+        cout << "DEBUG: No articles found matching the search criteria.\n";
+        delete[] filteredArticles;
+        return;
+    }
+
+    auto startSort = startTimer();  // Start time measurement for sorting
+
+    // Bubble sort the filtered articles by descending date, placing "unknown" category/date last
+    for (int i = 0; i < filteredSize - 1; i++) {
+        for (int j = 0; j < filteredSize - i - 1; j++) {
+            int yearA = extractYear(filteredArticles[j].date);
+            int yearB = extractYear(filteredArticles[j + 1].date);
+            
+            string monthA = filteredArticles[j].date.substr(0, 3);
+            string monthB = filteredArticles[j + 1].date.substr(0, 3);
+            
+            int monthValueA = getMonthValue(monthA);
+            int monthValueB = getMonthValue(monthB);
+
+            bool unknownA = (filteredArticles[j].subject == "unknown" || filteredArticles[j].date == "unknown");
+            bool unknownB = (filteredArticles[j + 1].subject == "unknown" || filteredArticles[j + 1].date == "unknown");
+
+            // Sorting logic:
+            if (!unknownA && unknownB) {
+                swap(filteredArticles[j], filteredArticles[j + 1]);  // Move "unknown" to end
+            } else if (!unknownA && !unknownB) {
+                if (yearA < yearB || (yearA == yearB && monthValueA < monthValueB)) {
+                    swap(filteredArticles[j], filteredArticles[j + 1]);  // Sort by latest date first
+                }
+            }
+        }
+    }
+
+    // Display sorting time
+    double sortTime = calcElapsedTime(startSort);
+    cout << "Time taken for sorting: " << fixed << setprecision(1) << sortTime << "s" << endl;
+
+    // Save filtered and sorted results
+    ofstream outFile("searchResults.txt");
+    if (!outFile) {
+        delete[] filteredArticles;
+        return;
+    }
+
+    if (filteredSize == 0) {
+        outFile << "(?) No matching articles found.\n";
+    } else {
+        for (int i = 0; i < filteredSize; i++) {
+            outFile << "Title: " << filteredArticles[i].title << "\n";
+            outFile << "Category: " << filteredArticles[i].subject << "\n";
+            outFile << "Date: " << filteredArticles[i].date << "\n\n";
+        }
+    }
+    outFile.close();
+    
+    cout << "(**) " << filteredSize << " matching articles found and saved to searchResults.txt" << endl;
+
+    // Free dynamically allocated memory
+    delete[] filteredArticles;
+}
+
 // Function to search for news articles by category and save results to a file
 void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
-    string fakeCategories[] = {"government", "left", "middle", "us", "news", "politics"};
-    string trueCategories[] = {"politics", "world"};
     int categoryChoice, searchType;
+    string selectedCategory;
 
     cout << "\nSearch through:\n";
     cout << "1. Fake Articles\n";
@@ -216,7 +315,6 @@ void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], 
 
     Article* arr;
     int size;
-    string selectedCategory;
 
     if (searchType == 1) {
         arr = fakeArr;
@@ -248,7 +346,7 @@ void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], 
 
         cout << "\nSelect Category:\n";
         cout << "1. Politics News\n";
-        cout << "2. World New\n";
+        cout << "2. World News\n";
         cout << "Enter choice: ";
         cin >> categoryChoice;
 
@@ -263,16 +361,7 @@ void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], 
         return;
     }
 
-    ofstream outFile("searchResults.txt");
-    for (int i = 0; i < size; i++) {
-        if (isCategory(arr[i].subject, selectedCategory)) {
-            outFile << "Title: " << arr[i].title << "\n";
-            outFile << "Category: " << arr[i].subject << "\n";
-            outFile << "Date: " << arr[i].date << "\n\n";
-        }
-    }
-    outFile.close();
-    cout << "Results saved to searchResults.txt\n";
+    saveSortedResults(arr, size, selectedCategory);
 }
 
 // Function to search for news articles by year and save results to a files
@@ -301,22 +390,13 @@ void linearSearchByYear(Article fakeArr[], int fakeSize, Article trueArr[], int 
         return;
     }
 
-    ofstream outFile("searchResults.txt");
-    for (int i = 0; i < size; i++) {
-        if (extractYear(arr[i].date) == searchYear) {
-            outFile << "Title: " << arr[i].title << "\n";
-            outFile << "Category: " << arr[i].subject << "\n";
-            outFile << "Date: " << arr[i].date << "\n\n";
-        }
-    }
-    outFile.close();
-    cout << "Results saved to searchResults.txt\n";
+    saveSortedResults(arr, size, "", searchYear);
 }
 
 // Function to allow user to select search mode
 void searchMenu(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
     int choice;
-    cout << "Select search mode:\n";
+    cout << "\n\nSelect search mode:\n";
     cout << "1. Search by Category\n";
     cout << "2. Search by Year\n";
     cout << "Enter choice: ";
