@@ -1,13 +1,69 @@
-// SIOW HAN BIN FOR Q1
-
+// SIOW HAN BIN FOR Q3(sort year and subject)
 #include "CSVHandling_Array.hpp"
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <fstream> 
+#include "MergeSort_Array.hpp"
 
 using namespace std;
 
-// Custom dynamic array class to simulate vector functionality
+// Assuming Article class/structure is defined somewhere in the project
+struct Article {
+    string title;
+    string date;
+    string subject;
+    Article* next;
+};
+
+struct YearCount {
+    int year;
+    int count;
+    
+    // This is for sorting YearCount by year (ascending)
+    bool operator<(const YearCount& other) const {
+        return year < other.year;
+    }
+};
+
+
+
+// Stores sorted articles in a file grouped by subject
+void storeSortedArticlesBySubject(Article* head, const string& filename) {
+    ofstream outFile(filename);
+
+    if (!outFile) {
+        cerr << "Error opening file for writing!" << endl;
+        return;
+    }
+
+    if (!head) {
+        cerr << "No articles to write!" << endl;
+        return;
+    }
+
+    string lastSubject = "";
+
+    // Write articles to file, grouping by subject
+    while (head) {
+        if (head->subject != lastSubject) {
+            if (!lastSubject.empty()) outFile << endl;
+            outFile << "Subject: " << head->subject << endl;
+            lastSubject = head->subject;
+        }
+
+        // Write article details
+        outFile << "  Title: " << head->title << endl;
+        outFile << "  Date: " << head->date << endl;
+        outFile << "--------------------------------------" << endl;
+
+        head = head->next;
+    }
+
+    outFile.close();
+    cout << "Sorted articles by subject stored in " << filename << " (Ascending Order)." << endl;
+}
+
 template <typename T>
 class DynamicArray {
 public:
@@ -111,44 +167,41 @@ private:
     }
 };
 
-// Function to count the number of articles per year
+// Function to count articles per year using a dynamic array of YearCount structs
 void countArticles_Merge(Article* articles, int articleCount) {
-    // Start the timer
     auto start = chrono::high_resolution_clock::now();
 
-    // Use a dynamic array to hold the year counts (similar to a map)
-    DynamicArray<int> years;
-    DynamicArray<int> counts;
+    DynamicArray<YearCount> yearCounts;
 
+    // Count articles per year
     for (int i = 0; i < articleCount; i++) {
         int year = extractYear(articles[i].date);
         if (year > 0) {
             bool found = false;
-            for (int j = 0; j < years.getSize(); j++) {
-                if (years[j] == year) {
-                    counts[j]++;
+            for (int j = 0; j < yearCounts.getSize(); j++) {
+                if (yearCounts[j].year == year) {
+                    yearCounts[j].count++;
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                years.push_back(year);
-                counts.push_back(1);
+                YearCount newYearCount = {year, 1};
+                yearCounts.push_back(newYearCount);
             }
         }
     }
 
-    // Sort the years
-    years.sort();
+    // Sort YearCount array by year
+    yearCounts.sort();
 
-    // Display the results sorted by year
+    // Display results sorted by year
     cout << "\n";
-    for (int i = 0; i < years.getSize(); i++) {
-        cout << years[i] << ": " << counts[i] << " articles" << endl;
+    for (int i = 0; i < yearCounts.getSize(); i++) {
+        cout << yearCounts[i].year << ": " << yearCounts[i].count << " articles" << endl;
     }
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
     cout << "Time taken for merge sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
 }
-
