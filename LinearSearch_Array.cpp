@@ -202,6 +202,38 @@ void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int 
     cout << "Memory usage taken for linear search: " << memoryUsage / (1024.0 * 1024.0) << "MB" << endl;
 }
 
+int getMonthValue(const string& month) {
+    const string months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    for (int i = 0; i < 12; i++) {
+        if (months[i] == month) return i + 1;
+    }
+    return 0;
+}
+
+void sortResultsByDate(Article articles[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            int yearA = extractYear(articles[j].date);
+            int yearB = extractYear(articles[j + 1].date);
+            
+            if (yearA > yearB || (yearA == yearB && getMonthValue(articles[j].date.substr(3, articles[j].date.find(',') - 3)) > getMonthValue(articles[j + 1].date.substr(3, articles[j + 1].date.find(',') - 3)))) {
+                swap(articles[j], articles[j + 1]);
+            }
+        }
+    }
+}
+
+void saveSortedResults(Article articles[], int size) {
+    ofstream outFile("sortedSearchResults.txt");
+    for (int i = 0; i < size; i++) {
+        outFile << "Title: " << articles[i].title << "\n";
+        outFile << "Category: " << articles[i].subject << "\n";
+        outFile << "Date: " << articles[i].date << "\n\n";
+    }
+    outFile.close();
+    cout << "Sorted results saved to sortedSearchResults.txt\n";
+}
+
 // Function to search for news articles by category and save results to a file
 void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
     string fakeCategories[] = {"government", "left", "middle", "us", "news", "politics"};
@@ -316,7 +348,7 @@ void linearSearchByYear(Article fakeArr[], int fakeSize, Article trueArr[], int 
 // Function to allow user to select search mode
 void searchMenu(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
     int choice;
-    cout << "Select search mode:\n";
+    cout << "\n\nSelect search mode:\n";
     cout << "1. Search by Category\n";
     cout << "2. Search by Year\n";
     cout << "Enter choice: ";
