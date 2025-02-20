@@ -4,6 +4,7 @@
 #include "HashSearch_Array.hpp"
 #include "BubbleSort_Array.hpp"
 #include "HeapSort_Array.hpp"
+#include "MergeSort_Array.hpp"
 
 using namespace std;
 
@@ -22,12 +23,19 @@ int main() {
     cout << "\n(**) True Articles by Year:";
     countArticles_Bubble(trueArticles, trueCount);
 
-    // Display article counts by year
+    // Display article counts by year using heap sort
     cout << "\n(**) Fake Articles by Year:";
     countArticles_Heap(fakeArticles, fakeCount);
 
     cout << "\n(**) True Articles by Year:";
     countArticles_Heap(trueArticles, trueCount);
+   
+    // Display article counts by year using merge sort
+    cout << "\n(**) Fake Articles by Year:";
+    countArticles_Merge(fakeArticles, fakeCount);
+
+    cout << "\n(**) True Articles by Year:";
+    countArticles_Merge(trueArticles, trueCount);
 
     // Calculate percentage of fake political news for each month in 2016
     trackNews_Array(fakeArticles, fakeCount, trueArticles, trueCount);
@@ -45,5 +53,5 @@ int main() {
     return 0;
 }
 
-// g++ CSVHandling_Array.cpp HashSearch_Array.cpp main.cpp LinearSearch_Array.cpp BubbleSort_Array.cpp HeapSort_Array.cpp -o main
+// g++ CSVHandling_Array.cpp HashSearch_Array.cpp main.cpp LinearSearch_Array.cpp BubbleSort_Array.cpp HeapSort_Array.cpp MergeSort_Array.cpp -o main
 // ./main
