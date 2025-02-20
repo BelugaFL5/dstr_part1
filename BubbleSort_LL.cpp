@@ -9,24 +9,21 @@ using namespace std;
 using namespace std::chrono;
 
 
-
-// Function to extract the year from the article's date (without comma)
+// Function to extract the year from an article's date
 int extractYear(const string& date) {
-    string trimmedDate = trim(date);  // Ensure no leading/trailing spaces
+    string trimmedDate = trim(date);  // Remove leading/trailing spaces
     size_t lastSpace = trimmedDate.find_last_of(' ');  // Find the last space
+    
     if (lastSpace == string::npos) return 0;  // Return 0 if no space found
 
     string yearStr = trimmedDate.substr(lastSpace + 1); // Extract year
     
-    // Check if the year string is numeric and has exactly 4 digits
-    if (yearStr.length() == 4 && all_of(yearStr.begin(), yearStr.end(), ::isdigit)) {
-        return stoi(yearStr); // Return the year as an integer
-    }
-
-    return 0;  // Return 0 for invalid year format
+    // Check if the year has exactly 4 digits and is numeric
+    return (yearStr.length() == 4 && all_of(yearStr.begin(), yearStr.end(), ::isdigit)) ? stoi(yearStr) : 0;
 }
 
-// Bubble sort for linked list based on the year (Ascending Order)
+
+// Bubble Sort for linked list based on article year (descending Order)
 void bubbleSort(Article*& head) {
     if (!head || !head->next) return;
 
@@ -42,7 +39,7 @@ void bubbleSort(Article*& head) {
             int year1 = extractYear(ptr->date);
             int year2 = extractYear(ptr->next->date);
 
-            // Only swap if both years are valid
+            // Swap only if years are valid and out of order
             if (year1 > 0 && year2 > 0 && year1 < year2) { 
                 swap(ptr->title, ptr->next->title);
                 swap(ptr->date, ptr->next->date);
@@ -52,23 +49,23 @@ void bubbleSort(Article*& head) {
             }
             ptr = ptr->next;
         }
-        lastSorted = ptr;
+        lastSorted = ptr;  // Mark last sorted element
     } while (swapped);
 }
 
-
-
+// Count articles with valid years
 int countValidArticles(Article* head) {
     int count = 0;
     while (head) {
         if (extractYear(head->date) > 0) {
-            count++;  // Count only valid dates
+            count++;  // Only count valid articles
         }
         head = head->next;
     }
     return count;
 }
 
+// Store sorted articles in a file (Ascending Order)
 void storeSortedArticlesToFile(Article* head, const string& filename) {
     ofstream outFile(filename);
 
@@ -82,7 +79,7 @@ void storeSortedArticlesToFile(Article* head, const string& filename) {
         return;
     }
 
-    // Find the last node (tail) to start writing from the end
+    // Find the last node to write from end to start
     Article* tail = head;
     while (tail->next) {
         tail = tail->next;
@@ -90,16 +87,13 @@ void storeSortedArticlesToFile(Article* head, const string& filename) {
 
     int lastYear = -1;
 
-    // Traverse the list from tail to head in reverse order
+    // Traverse in reverse order
     while (tail) {
         int year = extractYear(tail->date);
 
-        // Ensure we only print valid years
         if (year > 0) {
             if (year != lastYear) {
-                if (lastYear != -1) {
-                    outFile << endl;  // Space between different years
-                }
+                if (lastYear != -1) outFile << endl;  // Separate different years
                 outFile << "Year: " << year << endl;
                 lastYear = year;
             }
@@ -109,15 +103,14 @@ void storeSortedArticlesToFile(Article* head, const string& filename) {
             outFile << "--------------------------------------" << endl;
         }
 
-        // Move tail backwards to the previous node
+        // Move tail backwards
         Article* prev = head;
         while (prev && prev->next != tail) {
             prev = prev->next;
         }
-        tail = (tail == head) ? nullptr : prev;  // Stop when we reach the head
+        tail = (tail == head) ? nullptr : prev;  // Stop when reaching head
     }
 
     outFile.close();
-    cout << "Sorted articles have been stored in " << filename << " in ascending order." << endl;
+    cout << "Sorted articles have been stored in " << filename << "." << endl;
 }
-
