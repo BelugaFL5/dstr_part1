@@ -106,27 +106,41 @@ void parseCSVLine(const string& line, string fields[4]) {
     bool inQuotes = false;
     string tempField;
 
+    // Initialize all fields as "unknown"
+    for (int i = 0; i < 4; i++) {
+        fields[i] = "unknown";
+    }
+
     while (ss.good() && fieldCount < 4) {
         char c = ss.get();
         if (c == '"') {
             inQuotes = !inQuotes;  // Toggle inside quote state
         } else if (c == ',' && !inQuotes) {
-            fields[fieldCount++] = trim(tempField);
+            fields[fieldCount] = trim(tempField);
+
+            // Replace if field starts with "http"
+            if (fields[fieldCount].find("http") == 0) {
+                fields[fieldCount] = "unknown";
+            }
+
+            fieldCount++;
             tempField.clear();
         } else {
             tempField += c;
         }
     }
 
-    if (!tempField.empty() || fieldCount < 4) {
-        fields[fieldCount++] = trim(tempField);
+    if (!tempField.empty()) {
+        fields[fieldCount] = trim(tempField);
+
+        // Replace if field starts with "http"
+        if (fields[fieldCount].find("http") == 0) {
+            fields[fieldCount] = "unknown";
+        }
     }
 
-    while (fieldCount < 4) {
-        fields[fieldCount++] = "unknown";
-    }
-
-    convertMonthToShortForm(fields[3]); // Convert full month names to short form before storing
+    // Convert month name in date field
+    convertMonthToShortForm(fields[3]);
 }
 
 // Function to read CSV and store articles in an array
@@ -162,17 +176,8 @@ Article* readCSV(const string& inputFile, int& count, bool trackIssues = false) 
     while (getline(file, line)) {
         rowNumber++;
 
-        // Remove hidden characters (Windows newline issues)
-        line.erase(remove(line.begin(), line.end(), '\r'), line.end());
-        line.erase(remove(line.begin(), line.end(), '\n'), line.end());
-
         string fields[4];
         parseCSVLine(line, fields);
-
-        trim(fields[0]);
-        trim(fields[1]);
-        trim(fields[2]);
-        trim(fields[3]);
 
         // Store article in the array
         articles[count] = {fields[0], fields[1], fields[2], fields[3]};
