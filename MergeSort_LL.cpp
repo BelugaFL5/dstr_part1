@@ -2,7 +2,7 @@
 #include <iostream>
 #include <chrono>
 
-// Function to split the list into two halves
+// Splits the linked list into two halves for merge sort
 void splitList(Article* head, Article** left, Article** right) {
     if (!head || !head->next) {
         *left = head;
@@ -11,44 +11,50 @@ void splitList(Article* head, Article** left, Article** right) {
     }
     Article* slow = head;
     Article* fast = head->next;
+
+    // Move fast pointer twice as fast as slow to find the middle
     while (fast && fast->next) {
         slow = slow->next;
         fast = fast->next->next;
     }
+
+    // Split the list into two halves
     *left = head;
     *right = slow->next;
     slow->next = nullptr;
 }
 
-// Merge two sorted linked lists
+// Merges two sorted linked lists based on subject
 Article* merge(Article* left, Article* right) {
     if (!left) return right;
     if (!right) return left;
     
-    Article* result = nullptr;
+    // Select the smaller subject alphabetically
     if (left->subject < right->subject) {
-        result = left;
-        result->next = merge(left->next, right);
+        left->next = merge(left->next, right);
+        return left;
     } else {
-        result = right;
-        result->next = merge(left, right->next);
+        right->next = merge(left, right->next);
+        return right;
     }
-    return result;
 }
 
-// Merge Sort function
+// Merge Sort algorithm for sorting the linked list by subject
 Article* mergeSort(Article* head) {
     if (!head || !head->next) return head;
     
     Article *left, *right;
     splitList(head, &left, &right);
     
+    // Recursively sort both halves
     left = mergeSort(left);
     right = mergeSort(right);
+
+    // Merge the sorted halves
     return merge(left, right);
 }
 
-// Function to count articles per subject using a linked list (no unordered_map)
+// Counts articles per subject using a linked list (no built-in containers)
 void countArticlesPerSubject(Article* head, const std::string& datasetName) {
     struct SubjectCountNode {
         std::string subject;
@@ -59,14 +65,20 @@ void countArticlesPerSubject(Article* head, const std::string& datasetName) {
     
     SubjectCountNode* subjectHead = nullptr;
     Article* temp = head;
+
+    // Traverse the sorted list and count subjects
     while (temp) {
         std::string subject = temp->subject;
         SubjectCountNode* current = subjectHead;
         SubjectCountNode* prev = nullptr;
+
+        // Find the correct position for the subject
         while (current && current->subject < subject) {
             prev = current;
             current = current->next;
         }
+
+        // If subject exists, increase count, otherwise insert new node
         if (current && current->subject == subject) {
             current->count++;
         } else {
@@ -81,18 +93,21 @@ void countArticlesPerSubject(Article* head, const std::string& datasetName) {
         }
         temp = temp->next;
     }
-    
-    // Print results
+
+    // Print subject counts
     std::cout << "\nArticles per subject in " << datasetName << " dataset:" << std::endl;
     SubjectCountNode* current = subjectHead;
     while (current) {
         std::cout << "Subject: " << current->subject << " - " << current->count << " Articles" << std::endl;
+        
+        // Free allocated memory
         SubjectCountNode* temp = current;
         current = current->next;
         delete temp;
     }
 }
 
+// Stores sorted articles in a file grouped by subject
 void storeSortedArticlesBySubject(Article* head, const string& filename) {
     ofstream outFile(filename);
 
@@ -108,6 +123,7 @@ void storeSortedArticlesBySubject(Article* head, const string& filename) {
 
     string lastSubject = "";
 
+    // Write articles to file, grouping by subject
     while (head) {
         if (head->subject != lastSubject) {
             if (!lastSubject.empty()) outFile << endl;
@@ -115,6 +131,7 @@ void storeSortedArticlesBySubject(Article* head, const string& filename) {
             lastSubject = head->subject;
         }
 
+        // Write article details
         outFile << "  Title: " << head->title << endl;
         outFile << "  Date: " << head->date << endl;
         outFile << "--------------------------------------" << endl;

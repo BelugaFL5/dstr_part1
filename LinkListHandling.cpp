@@ -141,30 +141,39 @@ void deleteList(Article*& head) {
     }
 }
 
+// Function to measure the execution time and memory usage of sorting algorithms for Linked List
 void measureTimeAndMemory(Article*& head, bool useMergeSort) {
     using namespace std::chrono;
-    
+
+    // Record the start time before sorting
     auto start = high_resolution_clock::now();
 
+    // Sort the linked list using the selected sorting algorithm
     if (useMergeSort) {
-        head = mergeSort(head);  // If true, use Merge Sort
+        head = mergeSort(head);  // If true, apply Merge Sort
     } else {
-        bubbleSort(head);        // If false, use Bubble Sort
+        bubbleSort(head);        // If false, apply Bubble Sort
     }
 
+    // Record the end time after sorting
     auto end = high_resolution_clock::now();
-    duration<double> duration = end - start;
     
+    // Calculate the time duration taken for sorting
+    duration<double> duration = end - start;
     std::cout << "Sorting took: " << duration.count() << " seconds" << std::endl;
 
-    // Count total articles
-    int totalArticles = countArticles(head);
+    // Use different count functions based on sorting method
+    // Merge Sort uses countArticles, while Bubble Sort uses countValidArticles
+    int totalArticles = useMergeSort ? countArticles(head) : countValidArticles(head);
     std::cout << "Total Articles: " << totalArticles << std::endl;
 
-    // Estimate memory usage
+    // Estimate the memory usage based on the number of articles
+    // Memory usage is calculated by multiplying the size of an Article node by the total count
     size_t memoryUsage = sizeof(Article) * totalArticles;
     std::cout << "Memory usage: " << memoryUsage / (1024 * 1024) << " MB" << std::endl;
 }
+
+
 
 
 // Function to count total articles in a linked list
@@ -176,3 +185,4 @@ int countArticles(Article* head) {
     }
     return count;
 }
+
