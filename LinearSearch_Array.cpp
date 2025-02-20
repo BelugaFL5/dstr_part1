@@ -31,19 +31,6 @@ void printDashes(double percentage) {
     }
 }
 
-// Function to extract the year from the article's date
-int extractYear(string date) {
-    date = trim(date);  // Ensure no leading/trailing spaces
-    size_t lastSpace = date.find_last_of(' ');
-    if (lastSpace == string::npos) return 0;  // Error case
-    string yearStr = date.substr(lastSpace + 1); // Extract year
-    try {
-        return stoi(yearStr); // Convert to integer
-    } catch (...) {
-        return 0;  // Handle errors
-    }
-}
-
 // Function to check if the article belongs to a specific category
 bool isCategory(const string& subject, const string& category) {
     if (category == "news") {
@@ -87,7 +74,7 @@ double totalNewsPercentage(Article fakeArr[], int fakeSize, Article trueArr[], i
 }
 
 // Function to search for political news in 2016 and display the percentage for each month
-void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
+void trackNews_Array(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
     auto start = startTimer();  // Start time measurement
 
     int politicalArticles_perMonth[12] = {0}; // Track total political articles (fake + true) per month
@@ -195,7 +182,7 @@ void linearSearch_Array(Article fakeArr[], int fakeSize, Article trueArr[], int 
 
     // Display elapsed time
     double elapsedTime = calcElapsedTime(start);
-    cout << "\nTime taken for linear search: " << elapsedTime << "s" << endl;
+    cout << "\nTime taken for linear search: " << elapsedTime << "ms" << endl;
 
     // Display memory usage
     size_t memoryUsage = calcMemoryUsage(fakeSize, trueSize);
@@ -237,11 +224,11 @@ void saveSortedResults(Article articles[], int size, const string& selectedCateg
 
     // Calculate and print searching time **before starting sorting**
     double searchTime = calcElapsedTime(startSearch);
-    cout << "\nTime taken for searching: " << fixed << setprecision(1) << searchTime << "s" << endl;
+    cout << "\nTime taken for searching: " << fixed << setprecision(1) << searchTime << "ms" << endl;
 
     // Check if any articles matched before sorting
     if (filteredSize == 0) {
-        cout << "DEBUG: No articles found matching the search criteria.\n";
+        cout << "(!) No articles found matching the search criteria.\n";
         delete[] filteredArticles;
         return;
     }
@@ -276,7 +263,7 @@ void saveSortedResults(Article articles[], int size, const string& selectedCateg
 
     // Display sorting time
     double sortTime = calcElapsedTime(startSort);
-    cout << "Time taken for sorting: " << fixed << setprecision(1) << sortTime << "s" << endl;
+    cout << "Time taken for sorting: " << fixed << setprecision(1) << sortTime << "ms" << endl;
 
     // Save filtered and sorted results
     ofstream outFile("searchResults.txt");

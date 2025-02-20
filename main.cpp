@@ -2,7 +2,8 @@
 #include <iomanip>
 #include "LinearSearch_Array.hpp"
 #include "HashSearch_Array.hpp"
-
+#include "BubbleSort_Array.hpp"
+#include "HeapSort_Array.hpp"
 
 using namespace std;
 
@@ -14,8 +15,22 @@ int main() {
     Article* fakeArticles = readCSV("data-fake.csv", fakeCount, true);
     Article* trueArticles = readCSV("data-true.csv", trueCount, false);
 
+    // Display article counts by year
+    cout << "\n(**) Fake Articles by Year:";
+    countArticles_Bubble(fakeArticles, fakeCount);
+
+    cout << "\n(**) True Articles by Year:";
+    countArticles_Bubble(trueArticles, trueCount);
+
+    // Display article counts by year
+    cout << "\n(**) Fake Articles by Year:";
+    countArticles_Heap(fakeArticles, fakeCount);
+
+    cout << "\n(**) True Articles by Year:";
+    countArticles_Heap(trueArticles, trueCount);
+
     // Calculate percentage of fake political news for each month in 2016
-    linearSearch_Array(fakeArticles, fakeCount, trueArticles, trueCount);
+    trackNews_Array(fakeArticles, fakeCount, trueArticles, trueCount);
 
     // Frequent words in government-related news
     analyzeContent_Array(fakeArticles, fakeCount);
@@ -29,3 +44,6 @@ int main() {
 
     return 0;
 }
+
+// g++ CSVHandling_Array.cpp HashSearch_Array.cpp main.cpp LinearSearch_Array.cpp BubbleSort_Array.cpp HeapSort_Array.cpp -o main
+// ./main

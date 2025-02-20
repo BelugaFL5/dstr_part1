@@ -46,6 +46,7 @@ size_t calcMemoryUsage(int fakeSize, int trueSize);
 size_t calcMemoryUsage(HashTable& hashTable);
 string trim(string str);
 void convertMonthToShortForm(string& date);
+int extractYear(string date);
 void parseCSVLine(const string& line, string fields[4]);
 Article* readCSV(const string& inputFile, int& count, bool trackIssues);
 

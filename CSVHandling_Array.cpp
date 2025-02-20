@@ -12,15 +12,15 @@ char stopWords[MAX_STOPWORDS][MAX_WORD_LENGTH];  // Array to hold stop words
 int stopWordsCount = 0;  // Track the number of stop words loaded
 
 // Start time measurement
-std::chrono::high_resolution_clock::time_point startTimer() {
-    return std::chrono::high_resolution_clock::now();
+chrono::high_resolution_clock::time_point startTimer() {
+    return chrono::high_resolution_clock::now();
 }
 
 // Calculate elapsed time in seconds
-double calcElapsedTime(std::chrono::high_resolution_clock::time_point start) {
-    using namespace std::chrono;
+double calcElapsedTime(chrono::high_resolution_clock::time_point start) {
+    using namespace chrono;
     auto end = high_resolution_clock::now();
-    duration<double> duration = end - start;
+    duration<double, milli> duration = end - start;  // Convert to milliseconds
     return duration.count();
 }
 
@@ -96,6 +96,19 @@ void convertMonthToShortForm(string& date) {
     else if (date.find("october") != string::npos) date.replace(date.find("october"), 7, "oct");
     else if (date.find("november") != string::npos) date.replace(date.find("november"), 8, "nov");
     else if (date.find("december") != string::npos) date.replace(date.find("december"), 8, "dec");
+}
+
+// Function to extract the year from the article's date
+int extractYear(string date) {
+    date = trim(date);  // Ensure no leading/trailing spaces
+    size_t lastSpace = date.find_last_of(' ');
+    if (lastSpace == string::npos) return 0;  // Error case
+    string yearStr = date.substr(lastSpace + 1); // Extract year
+    try {
+        return stoi(yearStr); // Convert to integer
+    } catch (...) {
+        return 0;  // Handle errors
+    }
 }
 
 // Function to correctly parse a CSV line (handles quoted fields with commas)
@@ -190,7 +203,7 @@ Article* readCSV(const string& inputFile, int& count, bool trackIssues = false) 
     // Display elapsed time
     double elapsedTime = calcElapsedTime(start);
     cout << fixed << setprecision(1);
-    cout << "Time taken: " << elapsedTime << "s" << endl;
+    cout << "Time taken: " << elapsedTime << "ms" << endl;
 
     // Display memory usage
     size_t memoryUsage = calcMemoryUsage(articles, count);

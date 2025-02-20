@@ -1,16 +1,12 @@
 #ifndef BUBBLESORT_Array_HPP
 #define BUBBLESORT_Array_HPP
 
+#include "CSVHandling_Array.hpp"
 
+using namespace std;
 
 // Function prototypes
-void push_back(const T& element);
-void bubbleSort(T arr[], int n);
-void convertMonthToShortForm(string& date);
-void parseCSVLine(const string& line, string fields[4]);
-void countArticlesByYear(Article* articles, int articleCount);
-void push_back(const T& element);
-
+void countArticles_Bubble(Article* articles, int articleCount);
 
 #endif
 

@@ -189,7 +189,7 @@ void analyzeContent_Array(Article fakeArr[], int fakeSize) {
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
-    cout << "\nTime taken for hash search: " << fixed << setprecision(1) << elapsedTime << "s" << endl;
+    cout << "\nTime taken for hash search: " << fixed << setprecision(1) << elapsedTime << "ms" << endl;
 
     // Calculate memory usage in KB
     size_t memoryUsage = calcMemoryUsage(hashTable);
