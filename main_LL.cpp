@@ -1,7 +1,6 @@
 #include "LinkListHandling.hpp"
 #include "BubbleSort_LL.hpp"
 #include "MergeSort_LL.hpp"
-#include "ArticleCounter.hpp"
 #include <iostream>
 
 using namespace std;
@@ -74,5 +73,5 @@ int main() {
 }
 
 
-//main_LL main_LL.cpp LinkListHandling.cpp BubbleSort_LL.cpp ArticleCounter.cpp MergeSort_LL.cpp
+//g++ -o main_LL main_LL.cpp LinkListHandling.cpp BubbleSort_LL.cpp MergeSort_LL.cpp 
 //./main_LL
