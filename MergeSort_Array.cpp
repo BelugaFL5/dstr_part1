@@ -1,200 +1,146 @@
+#include "CSVHandling_Array.hpp"
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
+#include <iomanip>
 #include <chrono>
-#include <vector>
 
 using namespace std;
 
-// Define the Article struct
-struct Article {
-    string title, content, subject, date;
+// Custom dynamic array class to simulate vector functionality
+template <typename T>
+class DynamicArray {
+public:
+    T* data;
+    int size;
+    int capacity;
+
+    // Constructor
+    DynamicArray(int initialCapacity = 10) {
+        capacity = initialCapacity;
+        size = 0;
+        data = new T[capacity];
+    }
+
+    // Destructor
+    ~DynamicArray() {
+        delete[] data;
+    }
+
+    // Add an element to the array
+    void push_back(const T& element) {
+        if (size == capacity) {
+            capacity *= 2;
+            T* newData = new T[capacity];
+            for (int i = 0; i < size; ++i) {
+                newData[i] = data[i];
+            }
+            delete[] data;
+            data = newData;
+        }
+        data[size++] = element;
+    }
+
+    // Get element at index
+    T& operator[](int index) {
+        return data[index];
+    }
+
+    // Get size of the array
+    int getSize() const {
+        return size;
+    }
+
+    // Sort the array (using merge sort)
+    void sort() {
+        mergeSort(data, 0, size - 1);
+    }
+
+private:
+    // Merge function to merge two halves
+    void merge(T arr[], int left, int middle, int right) {
+        int n1 = middle - left + 1;
+        int n2 = right - middle;
+
+        T* leftArray = new T[n1];
+        T* rightArray = new T[n2];
+
+        for (int i = 0; i < n1; i++)
+            leftArray[i] = arr[left + i];
+
+        for (int i = 0; i < n2; i++)
+            rightArray[i] = arr[middle + 1 + i];
+
+        int i = 0, j = 0, k = left;
+
+        while (i < n1 && j < n2) {
+            if (leftArray[i] <= rightArray[j]) {
+                arr[k++] = leftArray[i++];
+            } else {
+                arr[k++] = rightArray[j++];
+            }
+        }
+
+        while (i < n1) {
+            arr[k++] = leftArray[i++];
+        }
+
+        while (j < n2) {
+            arr[k++] = rightArray[j++];
+        }
+
+        delete[] leftArray;
+        delete[] rightArray;
+    }
+
+    // Merge sort algorithm
+    void mergeSort(T arr[], int left, int right) {
+        if (left < right) {
+            int middle = left + (right - left) / 2;
+
+            mergeSort(arr, left, middle);
+            mergeSort(arr, middle + 1, right);
+
+            merge(arr, left, middle, right);
+        }
+    }
 };
 
-// Function to trim spaces and special characters from strings
-string trim(const string& str) {
-    size_t start = str.find_first_not_of(" \t\r\n");
-    size_t end = str.find_last_not_of(" \t\r\n");
-    return (start == string::npos || end == string::npos) ? "" : str.substr(start, end - start + 1);
-}
-
-// Function to parse a CSV line (handles quoted fields with commas)
-void parseCSVLine(const string& line, string& title, string& content, string& subject, string& date) {
-    stringstream ss(line);
-    string field;
-    int fieldCount = 0;
-
-    while (getline(ss, field, ',')) {
-        if (fieldCount == 0) title = trim(field);       // Title
-        else if (fieldCount == 1) content = trim(field); // Content
-        else if (fieldCount == 2) subject = trim(field); // Subject
-        else if (fieldCount == 3) date = trim(field);    // Date
-        fieldCount++;
-    }
-}
-
-// Function to read CSV file and store articles in a vector
-vector<Article> readCSV(const string& inputFile) {
-    ifstream file(inputFile);
-    if (!file.is_open()) {
-        cerr << "Error: Could not open " << inputFile << endl;
-        exit(1);
-    }
-
-    string line;
-    vector<Article> articles;
-    
-    // Skip the header line
-    getline(file, line);
-
-    // Read each line and parse it
-    while (getline(file, line)) {
-        string title, content, subject, date;
-        parseCSVLine(line, title, content, subject, date);
-        
-        // Add the parsed article to the vector
-        articles.push_back({title, content, subject, date});
-    }
-
-    file.close();
-    return articles;
-}
-
-// Function to split the array into two halves
-void mergeSort(vector<Article>& arr, int low, int high) {
-    if (low < high) {
-        int mid = (low + high) / 2;
-        mergeSort(arr, low, mid);
-        mergeSort(arr, mid + 1, high);
-        
-        // Merge the sorted halves
-        vector<Article> left(arr.begin() + low, arr.begin() + mid + 1);
-        vector<Article> right(arr.begin() + mid + 1, arr.begin() + high + 1);
-        
-        int i = 0, j = 0, k = low;
-        
-        // Merge the two halves
-        while (i < left.size() && j < right.size()) {
-            if (left[i].subject < right[j].subject) {
-                arr[k] = left[i];
-                i++;
-            } else {
-                arr[k] = right[j];
-                j++;
-            }
-            k++;
-        }
-        
-        // Copy remaining elements from left
-        while (i < left.size()) {
-            arr[k] = left[i];
-            i++;
-            k++;
-        }
-        
-        // Copy remaining elements from right
-        while (j < right.size()) {
-            arr[k] = right[j];
-            j++;
-            k++;
-        }
-    }
-}
-
-// Function to count articles per subject
-void countArticlesPerSubject(const vector<Article>& arr) {
-    struct SubjectCountNode {
-        string subject;
-        int count;
-    };
-
-    vector<SubjectCountNode> subjectCount;
-
-    for (const auto& article : arr) {
-        bool found = false;
-        for (auto& node : subjectCount) {
-            if (node.subject == article.subject) {
-                node.count++;
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            subjectCount.push_back({article.subject, 1});
-        }
-    }
-
-    // Print results
-    cout << "\nArticles per subject:" << endl;
-    for (const auto& node : subjectCount) {
-        cout << "Subject: " << node.subject << " - " << node.count << " Articles" << endl;
-    }
-}
-
-// Function to store sorted articles by subject in a file
-void storeSortedArticlesBySubject(const vector<Article>& arr, const string& filename) {
-    ofstream outFile(filename);
-
-    if (!outFile) {
-        cerr << "Error opening file for writing!" << endl;
-        return;
-    }
-
-    if (arr.empty()) {
-        cerr << "No articles to write!" << endl;
-        return;
-    }
-
-    string lastSubject = "";
-
-    for (const auto& article : arr) {
-        if (article.subject != lastSubject) {
-            if (!lastSubject.empty()) outFile << endl;
-            outFile << "Subject: " << article.subject << endl;
-            lastSubject = article.subject;
-        }
-
-        outFile << "  Title: " << article.title << endl;
-        outFile << "  Date: " << article.date << endl;
-        outFile << "--------------------------------------" << endl;
-    }
-
-    outFile.close();
-    cout << "Sorted articles by subject stored in " << filename << " (Ascending Order)." << endl;
-}
-
-// Main function to demonstrate usage
-int main() {
+// Function to count the number of articles per year
+void countArticles_Merge(Article* articles, int articleCount) {
+    // Start the timer
     auto start = chrono::high_resolution_clock::now();
 
-    // Read articles from both CSV files
-    vector<Article> articles;
-    vector<Article> fakeArticles = readCSV("data-fake.csv");
-    vector<Article> trueArticles = readCSV("data-true.csv");
+    // Use a dynamic array to hold the year counts (similar to a map)
+    DynamicArray<int> years;
+    DynamicArray<int> counts;
 
-    // Combine both datasets
-    articles.insert(articles.end(), fakeArticles.begin(), fakeArticles.end());
-    articles.insert(articles.end(), trueArticles.begin(), trueArticles.end());
+    for (int i = 0; i < articleCount; i++) {
+        int year = extractYear(articles[i].date);
+        if (year > 0) {
+            bool found = false;
+            for (int j = 0; j < years.getSize(); j++) {
+                if (years[j] == year) {
+                    counts[j]++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                years.push_back(year);
+                counts.push_back(1);
+            }
+        }
+    }
 
-    // Measure memory usage (estimate based on the size of the vector and its elements)
-    size_t memoryUsage = articles.size() * sizeof(Article) / 1024 / 1024;  // in MB
+    // Sort the years using merge sort
+    years.sort();
 
-    // Perform merge sort by subject
-    mergeSort(articles, 0, articles.size() - 1);
-    
-    // Count articles per subject
-    countArticlesPerSubject(articles);
-    
-    // Store sorted articles by subject in a file
-    storeSortedArticlesBySubject(articles, "sorted_articles.txt");
+    // Display the results sorted by year
+    cout << "\n";
+    for (int i = 0; i < years.getSize(); i++) {
+        cout << years[i] << ": " << counts[i] << " articles" << endl;
+    }
 
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> elapsed = end - start;
-
-    cout << "\nSorting took: " << elapsed.count() << " seconds" << endl;
-    cout << "Total Articles: " << articles.size() << endl;
-    cout << "Memory usage: " << memoryUsage << " MB" << endl;
-
-    return 0;
+    // Calculate elapsed time
+    double elapsedTime = calcElapsedTime(start);
+    cout << "Time taken for merge sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
 }
