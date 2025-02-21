@@ -85,7 +85,7 @@ void insertOrUpdateYearCount(YearCountNode*& head, int year) {
     YearCountNode* previous = nullptr;
 
     // Check if the year already exists in the list
-    while (current && current->year > year) { // Ensure descending order
+    while (current && current->year < year) { // Ensure descending order
         previous = current;
         current = current->next;
     }
@@ -138,38 +138,45 @@ void storeSortedArticlesToFile(Article* head, const string& filename) {
         return;
     }
 
-    // Find the last node to write from end to start
-    Article* tail = head;
-    while (tail->next) {
-        tail = tail->next;
+    // Step 1: Use a temporary linked list to count and store years (ASCENDING ORDER)
+    YearCountNode* yearHead = nullptr;
+    Article* temp = head;
+    while (temp) {
+        int year = extractYear(temp->date);
+        if (year > 0) {
+            insertOrUpdateYearCount(yearHead, year);  // Ensure ASCENDING order
+        }
+        temp = temp->next;
     }
 
-    int lastYear = -1;
+    // Step 2: Traverse the year-count linked list in ASCENDING order
+    YearCountNode* currentYearNode = yearHead;
+    while (currentYearNode) {
+        outFile << "Year: " << currentYearNode->year << endl;
 
-    // Traverse in reverse order
-    while (tail) {
-        int year = extractYear(tail->date);
-
-        if (year > 0) {
-            if (year != lastYear) {
-                if (lastYear != -1) outFile << endl;  // Separate different years
-                outFile << "Year: " << year << endl;
-                lastYear = year;
+        // Step 3: Find and write articles for the current year
+        Article* currentArticle = head;
+        while (currentArticle) {
+            if (extractYear(currentArticle->date) == currentYearNode->year) {
+                outFile << "  Title: " << currentArticle->title << endl;
+                outFile << "  Date: " << currentArticle->date << endl;
+                outFile << "--------------------------------------" << endl;
             }
-
-            outFile << "  Title: " << tail->title << endl;
-            outFile << "  Date: " << tail->date << endl;
-            outFile << "--------------------------------------" << endl;
+            currentArticle = currentArticle->next;
         }
 
-        // Move tail backwards
-        Article* prev = head;
-        while (prev && prev->next != tail) {
-            prev = prev->next;
-        }
-        tail = (tail == head) ? nullptr : prev;  // Stop when reaching head
+        outFile << endl;  // Separate different years
+        currentYearNode = currentYearNode->next;
+    }
+
+    // Step 4: Cleanup the YearCountNode list
+    while (yearHead) {
+        YearCountNode* temp = yearHead;
+        yearHead = yearHead->next;
+        delete temp;
     }
 
     outFile.close();
     cout << "Sorted articles have been stored in " << filename << "." << endl;
 }
+
