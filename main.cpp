@@ -36,8 +36,7 @@ int main() {
     cout << "\n(**) True Articles by Year:";
     countArticles_Merge(trueArticles, trueCount);
 
-
-
+   
 
     // Calculate percentage of fake political news for each month in 2016
     trackNews_Array(fakeArticles, fakeCount, trueArticles, trueCount);
