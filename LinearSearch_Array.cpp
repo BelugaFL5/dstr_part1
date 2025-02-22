@@ -34,7 +34,7 @@ void printDashes(double percentage) {
 // Function to check if the article belongs to a specific category
 bool isCategory(const string& subject, const string& category) {
     if (category == "news") {
-        return regex_search(subject, regex("\\bnews\\b", regex_constants::icase)); // Ensure "news" is an exact match
+        return subject == "news"; // Match only if subject is exactly "news"
     }
     return regex_search(subject, regex(category, regex_constants::icase));
 }
@@ -318,10 +318,10 @@ void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], 
         cin >> categoryChoice;
 
         switch (categoryChoice) {
-            case 1: selectedCategory = "government"; break;
-            case 2: selectedCategory = "left"; break;
-            case 3: selectedCategory = "middle"; break;
-            case 4: selectedCategory = "us"; break;
+            case 1: selectedCategory = "government news"; break;
+            case 2: selectedCategory = "left-news"; break;
+            case 3: selectedCategory = "middle-east"; break;
+            case 4: selectedCategory = "us_news"; break;
             case 5: selectedCategory = "news"; break;
             case 6: selectedCategory = "politics"; break;
             default: cout << "Invalid choice. Exiting.\n"; return;
@@ -338,8 +338,8 @@ void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], 
         cin >> categoryChoice;
 
         switch (categoryChoice) {
-            case 1: selectedCategory = "politics"; break;
-            case 2: selectedCategory = "world"; break;
+            case 1: selectedCategory = "politicsnews"; break;
+            case 2: selectedCategory = "worldnews"; break;
             default: cout << "Invalid choice. Exiting.\n"; return;
         }
     } 
