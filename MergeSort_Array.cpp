@@ -5,6 +5,12 @@
 
 using namespace std;
 
+// Function to calculate additional memory usage for Merge Sort
+size_t calcMergeSortMemoryUsage(int n) {
+    // Merge Sort uses O(n) additional memory for temporary arrays
+    return n * sizeof(int); // Memory used by temporary arrays
+}
+
 // Custom dynamic array class to simulate vector functionality
 template <typename T>
 class DynamicArray {
@@ -143,4 +149,15 @@ void countArticles_Merge(Article* articles, int articleCount) {
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
     cout << "Time taken for merge sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
+
+    // Calculate memory usage for the input array
+    size_t inputMemoryUsage = calcMemoryUsage(articles, articleCount);
+
+    // Calculate additional memory usage for Merge Sort
+    size_t mergeSortMemoryUsage = calcMergeSortMemoryUsage(articleCount);
+
+    // Total memory usage
+    size_t totalMemoryUsage = inputMemoryUsage + mergeSortMemoryUsage;
+
+    cout << "Memory usage for merge sort: " << totalMemoryUsage / (1024.0 * 1024.0) << " MB" << endl;
 }

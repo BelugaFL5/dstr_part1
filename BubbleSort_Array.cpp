@@ -1,12 +1,15 @@
-// SIOW HAN BIN FOR Q1
-
 #include "CSVHandling_Array.hpp"
 #include <iostream>
 #include <iomanip>
 #include <chrono>
-#include "BubbleSort_Array.hpp"
 
 using namespace std;
+
+// Function to calculate additional memory usage for Bubble Sort
+size_t calcBubbleSortMemoryUsage() {
+    // Bubble Sort is in-place, so no additional memory is used
+    return 0;
+}
 
 // Custom dynamic array class to simulate vector functionality
 template <typename T>
@@ -102,7 +105,7 @@ void countArticles_Bubble(Article* articles, int articleCount) {
         }
     }
 
-    // Sort the years
+    // Sort the years using bubble sort
     years.sort();
 
     // Display the results sorted by year
@@ -114,4 +117,15 @@ void countArticles_Bubble(Article* articles, int articleCount) {
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
     cout << "Time taken for bubble sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
+
+    // Calculate memory usage for the input array
+    size_t inputMemoryUsage = calcMemoryUsage(articles, articleCount);
+
+    // Calculate additional memory usage for Bubble Sort
+    size_t bubbleSortMemoryUsage = calcBubbleSortMemoryUsage();
+
+    // Total memory usage
+    size_t totalMemoryUsage = inputMemoryUsage + bubbleSortMemoryUsage;
+
+    cout << "Memory usage for bubble sort: " << totalMemoryUsage / (1024.0 * 1024.0) << " MB" << endl;
 }
