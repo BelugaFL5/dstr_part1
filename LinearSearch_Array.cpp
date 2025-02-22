@@ -33,13 +33,10 @@ void printDashes(double percentage) {
 
 // Function to check if the article belongs to a specific category
 bool isCategory(const string& subject, const string& category) {
-    return regex_search(subject, regex("\\b" + regex_escape(category) + "\\b", regex_constants::icase));
-}
-
-// Utility function to escape special regex characters in category names
-string regex_escape(const string& input) {
-    static const regex specialChars(R"([.^$|(){}*+?\\])"); // Escape regex special characters
-    return regex_replace(input, specialChars, R"(\$&)");
+    if (category == "news") {
+        return subject == "news"; // Match only if subject is exactly "news"
+    }
+    return regex_search(subject, regex(category, regex_constants::icase));
 }
 
 // Function to calculate the total fake political news percentage from fake articles over total fake and true articles in 2016
