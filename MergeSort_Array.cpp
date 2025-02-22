@@ -2,13 +2,14 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <fstream> // Include for file handling
 
 using namespace std;
 
 // Function to calculate additional memory usage for Merge Sort
 size_t calcMergeSortMemoryUsage(int n) {
     // Merge Sort uses O(n) additional memory for temporary arrays
-    return n * sizeof(int); // Memory used by temporary arrays
+    return n * sizeof(Article); // Memory used by temporary arrays
 }
 
 // Custom dynamic array class to simulate vector functionality
@@ -78,7 +79,8 @@ private:
         int i = 0, j = 0, k = left;
 
         while (i < n1 && j < n2) {
-            if (leftArray[i] <= rightArray[j]) {
+            // Compare articles based on their subject
+            if (leftArray[i].subject <= rightArray[j].subject) {
                 arr[k++] = leftArray[i++];
             } else {
                 arr[k++] = rightArray[j++];
@@ -110,41 +112,34 @@ private:
     }
 };
 
-// Function to count the number of articles per year
-void countArticles_Merge(Article* articles, int articleCount) {
+// Function to sort articles by subject and export the results to a text file
+void sortArticlesBySubject_Merge(Article* articles, int articleCount, const string& outputFileName) {
     // Start the timer
     auto start = chrono::high_resolution_clock::now();
 
-    // Use a dynamic array to hold the year counts (similar to a map)
-    DynamicArray<int> years;
-    DynamicArray<int> counts;
-
+    // Sort the articles by subject using merge sort
+    DynamicArray<Article> articleArray;
     for (int i = 0; i < articleCount; i++) {
-        int year = extractYear(articles[i].date);
-        if (year > 0) {
-            bool found = false;
-            for (int j = 0; j < years.getSize(); j++) {
-                if (years[j] == year) {
-                    counts[j]++;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                years.push_back(year);
-                counts.push_back(1);
-            }
-        }
+        articleArray.push_back(articles[i]);
+    }
+    articleArray.sort();
+
+    // Open a file for writing the sorted results
+    ofstream outputFile(outputFileName);
+    if (!outputFile.is_open()) {
+        cerr << "Error: Could not open file " << outputFileName << " for writing." << endl;
+        return;
     }
 
-    // Sort the years using merge sort
-    years.sort();
-
-    // Display the results sorted by year
-    cout << "\n";
-    for (int i = 0; i < years.getSize(); i++) {
-        cout << years[i] << ": " << counts[i] << " articles" << endl;
+    // Write the sorted results to the file
+    outputFile << "Articles sorted by subject:\n";
+    for (int i = 0; i < articleArray.getSize(); i++) {
+        outputFile << "Subject: " << articleArray[i].subject << ", Title: " << articleArray[i].title << endl;
     }
+    outputFile.close();
+
+    // Display a confirmation message
+    cout << "Sorted results have been exported to " << outputFileName << endl;
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
