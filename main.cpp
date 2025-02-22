@@ -30,11 +30,14 @@ int main() {
     cout << "\n(**) True Articles by Year:";
     countArticles_Heap(trueArticles, trueCount);
 
-    cout << "\n(**) Fake Articles by Year:";
-    countArticles_Merge(fakeArticles, fakeCount);
+    cout << "\n(**) Fake Articles by Subject:\n";
+    sortArticlesBySubject_Merge(fakeArticles, fakeCount,"sort_fake_subjects_Array.txt");
 
-    cout << "\n(**) True Articles by Year:";
-    countArticles_Merge(trueArticles, trueCount);
+
+    cout << "\n(**) True Articles by Subject:\n";
+    sortArticlesBySubject_Merge(trueArticles, trueCount,"sort_true_subjects_Array.txt");
+
+   
 
     // Calculate percentage of fake political news for each month in 2016
     trackNews_Array(fakeArticles, fakeCount, trueArticles, trueCount);

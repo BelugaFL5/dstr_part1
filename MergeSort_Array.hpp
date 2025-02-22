@@ -6,6 +6,6 @@
 using namespace std;
 
 // Function prototypes
-void countArticles_Merge(Article* articles, int articleCount);
+void sortArticlesBySubject_Merge(Article* articles, int articleCount, const string& outputFileName);
 
 #endif // MERGESORT_ARRAY_HPP
