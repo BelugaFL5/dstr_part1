@@ -38,14 +38,13 @@
         cout << "\n(**) True Articles by Year:";
         countArticles_Merge(trueArticles, trueCount);
 
+        // Store sorted articles in text files using bubblesort
+        saveSortedArticlesToFile(fakeArticles,fakeCount, "sorted_fake_year_Array.txt");
+        saveSortedArticlesToFile(trueArticles,trueCount, "sorted_true_year_Array.txt");
 
-    // Store sorted articles in text files using bubblesort
-    saveSortedArticlesToFile(fakeArticles,fakeCount, "sorted_fake_year_Array.txt");
-    saveSortedArticlesToFile(trueArticles,trueCount, "sorted_true_year_Array.txt");
-
-    // Store sorted articles in text files using mergesort
-    storeSortedArticlesBySubject(fakeArticles, "sorted_fake_subjects_Array.txt");
-    storeSortedArticlesBySubject(trueArticles, "sorted_true_subjects_Array.txt");
+        // Store sorted articles in text files using mergesort
+        storeSortedArticlesBySubject(fakeArticles, "sorted_fake_subjects_Array.txt");
+        storeSortedArticlesBySubject(trueArticles, "sorted_true_subjects_Array.txt");
 
         // Calculate percentage of fake political news for each month in 2016
         trackNews_Array(fakeArticles, fakeCount, trueArticles, trueCount);
