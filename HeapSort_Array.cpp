@@ -134,7 +134,7 @@ void sortArticlesBySubject_Heap(Article* articles, int articleCount, const strin
     size_t heapSortMemoryUsage = calcHeapSortMemoryUsage(articleCount);
 
     // Total memory usage
-    size_t totalMemoryUsage = heapSortMemoryUsage - inputMemoryUsage;
+    size_t totalMemoryUsage = heapSortMemoryUsage + inputMemoryUsage;
 
     cout << "Memory usage for heap sort: " << totalMemoryUsage / (1024.0 * 1024.0) << " MB" << endl;
 }

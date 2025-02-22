@@ -124,11 +124,11 @@ void sortArticlesByYear_Bubble(Article* articles, int articleCount, const string
     outputFile.close();
 
     // Display a confirmation message
-    cout << "\n\nSorted results have been exported to " << outputFileName << endl;
+    cout << "\nSorted results have been exported to " << outputFileName << endl;
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
-    cout << "\n\nTime taken for bubble sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
+    cout << "\nTime taken for bubble sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
 
     // Calculate memory usage for the input array
     size_t inputMemoryUsage = calcMemoryUsage(articles, articleCount);
