@@ -206,7 +206,7 @@ void saveSortedResults(Article articles[], int size, const string& selectedCateg
     Article* filteredArticles = new Article[size];
     int filteredSize = 0;  
 
-    // Check if we even have any articles to process
+    // Check if there are articles to process
     if (size == 0) {
         delete[] filteredArticles;
         return;
@@ -222,9 +222,13 @@ void saveSortedResults(Article articles[], int size, const string& selectedCateg
         }
     }
 
-    // Calculate and print searching time **before starting sorting**
+    // Calculate and print searching time before sorting
     double searchTime = calcElapsedTime(startSearch);
     cout << "\nTime taken for searching: " << fixed << setprecision(1) << searchTime << "ms" << endl;
+
+    // Calculate and display memory usage for filtered articles
+    size_t memoryUsage = calcMemoryUsage(filteredSize);
+    cout << "Memory usage for search results: " << memoryUsage / (1024.0 * 1024.0) << " MB\n";
 
     // Check if any articles matched before sorting
     if (filteredSize == 0) {

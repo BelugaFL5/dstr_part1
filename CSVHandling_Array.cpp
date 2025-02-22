@@ -66,6 +66,11 @@ size_t calcMemoryUsage(Article* articles, int count) {
     return totalMemory;
 }
 
+size_t calcMemoryUsage(int filteredSize) {
+    size_t articleSize = sizeof(Article);  // Approximate size of one Article struct
+    return filteredSize * articleSize;     // Total memory used by filtered articles
+}
+
 // Function to trim spaces and special characters from strings
 string trim(string str) {
     str.erase(0, str.find_first_not_of(" \t\r\n"));
