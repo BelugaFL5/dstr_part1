@@ -7,6 +7,5 @@ using namespace std;
 
 // Function prototypes
 void countArticles_Bubble(Article* articles, int articleCount);
-void saveSortedArticlesToFile(Article* articles, int articleCount, const string& filename);
 #endif
 

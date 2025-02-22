@@ -7,6 +7,5 @@ using namespace std;
 
 // Function prototypes
 void countArticles_Merge(Article* articles, int articleCount);
-void storeSortedArticlesBySubject(Article* head, const string& filename);
 
 #endif // MERGESORT_ARRAY_HPP

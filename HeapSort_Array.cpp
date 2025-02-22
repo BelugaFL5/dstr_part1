@@ -1,11 +1,15 @@
-//SIOW HAN BIN FOR Q1
-
 #include "CSVHandling_Array.hpp"
 #include <iostream>
 #include <iomanip>
 #include <chrono>
 
 using namespace std;
+
+// Function to calculate additional memory usage for Heap Sort
+size_t calcHeapSortMemoryUsage(int n) {
+    // Heap Sort uses O(1) additional memory for the heap
+    return sizeof(int) * n; // Memory used by the heap
+}
 
 // Custom dynamic array class to simulate vector functionality
 template <typename T>
@@ -114,7 +118,7 @@ void countArticles_Heap(Article* articles, int articleCount) {
         }
     }
 
-    // Sort the years
+    // Sort the years using heap sort
     years.sort();
 
     // Display the results sorted by year
@@ -126,4 +130,15 @@ void countArticles_Heap(Article* articles, int articleCount) {
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
     cout << "Time taken for heap sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
+
+    // Calculate memory usage for the input array
+    size_t inputMemoryUsage = calcMemoryUsage(articles, articleCount);
+
+    // Calculate additional memory usage for Heap Sort
+    size_t heapSortMemoryUsage = calcHeapSortMemoryUsage(articleCount);
+
+    // Total memory usage
+    size_t totalMemoryUsage =  inputMemoryUsage - heapSortMemoryUsage;
+
+    cout << "Memory usage for heap sort: " << totalMemoryUsage / (1024.0 * 1024.0) << " MB" << endl;
 }

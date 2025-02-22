@@ -44,6 +44,7 @@ std::chrono::high_resolution_clock::time_point startTimer();
 double calcElapsedTime(std::chrono::high_resolution_clock::time_point start);
 size_t calcMemoryUsage(int fakeSize, int trueSize);
 size_t calcMemoryUsage(HashTable& hashTable);
+size_t calcMemoryUsage(Article* articles, int count);
 string trim(string str);
 void convertMonthToShortForm(string& date);
 int extractYear(string date);

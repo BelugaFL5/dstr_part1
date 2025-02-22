@@ -1,69 +1,17 @@
-// SIOW HAN BIN FOR Q3(sort year and subject)
 #include "CSVHandling_Array.hpp"
 #include <iostream>
 #include <iomanip>
 #include <chrono>
-#include <fstream> 
-#include "MergeSort_Array.hpp"
 
 using namespace std;
 
-// Assuming Article class/structure is defined somewhere in the project
-struct Article {
-    string title;
-    string date;
-    string subject;
-    Article* next;
-};
-
-struct YearCount {
-    int year;
-    int count;
-    
-    // This is for sorting YearCount by year (ascending)
-    bool operator<(const YearCount& other) const {
-        return year < other.year;
-    }
-};
-
-
-
-// Stores sorted articles in a file grouped by subject
-void storeSortedArticlesBySubject(Article* head, const string& filename) {
-    ofstream outFile(filename);
-
-    if (!outFile) {
-        cerr << "Error opening file for writing!" << endl;
-        return;
-    }
-
-    if (!head) {
-        cerr << "No articles to write!" << endl;
-        return;
-    }
-
-    string lastSubject = "";
-
-    // Write articles to file, grouping by subject
-    while (head) {
-        if (head->subject != lastSubject) {
-            if (!lastSubject.empty()) outFile << endl;
-            outFile << "Subject: " << head->subject << endl;
-            lastSubject = head->subject;
-        }
-
-        // Write article details
-        outFile << "  Title: " << head->title << endl;
-        outFile << "  Date: " << head->date << endl;
-        outFile << "--------------------------------------" << endl;
-
-        head = head->next;
-    }
-
-    outFile.close();
-    cout << "Sorted articles by subject stored in " << filename << " (Ascending Order)." << endl;
+// Function to calculate additional memory usage for Merge Sort
+size_t calcMergeSortMemoryUsage(int n) {
+    // Merge Sort uses O(n) additional memory for temporary arrays
+    return n * sizeof(int); // Memory used by temporary arrays
 }
 
+// Custom dynamic array class to simulate vector functionality
 template <typename T>
 class DynamicArray {
 public:
@@ -113,95 +61,103 @@ public:
     }
 
 private:
-    // Merge function for merging two halves of the array
-    void merge(T arr[], int low, int mid, int high) {
-        int leftSize = mid - low + 1;
-        int rightSize = high - mid;
+    // Merge function to merge two halves
+    void merge(T arr[], int left, int middle, int right) {
+        int n1 = middle - left + 1;
+        int n2 = right - middle;
 
-        T* left = new T[leftSize];
-        T* right = new T[rightSize];
+        T* leftArray = new T[n1];
+        T* rightArray = new T[n2];
 
-        for (int i = 0; i < leftSize; i++) {
-            left[i] = arr[low + i];
-        }
-        for (int i = 0; i < rightSize; i++) {
-            right[i] = arr[mid + 1 + i];
-        }
+        for (int i = 0; i < n1; i++)
+            leftArray[i] = arr[left + i];
 
-        int i = 0, j = 0, k = low;
-        while (i < leftSize && j < rightSize) {
-            if (left[i] < right[j]) {
-                arr[k] = left[i];
-                i++;
+        for (int i = 0; i < n2; i++)
+            rightArray[i] = arr[middle + 1 + i];
+
+        int i = 0, j = 0, k = left;
+
+        while (i < n1 && j < n2) {
+            if (leftArray[i] <= rightArray[j]) {
+                arr[k++] = leftArray[i++];
             } else {
-                arr[k] = right[j];
-                j++;
+                arr[k++] = rightArray[j++];
             }
-            k++;
         }
 
-        while (i < leftSize) {
-            arr[k] = left[i];
-            i++;
-            k++;
+        while (i < n1) {
+            arr[k++] = leftArray[i++];
         }
 
-        while (j < rightSize) {
-            arr[k] = right[j];
-            j++;
-            k++;
+        while (j < n2) {
+            arr[k++] = rightArray[j++];
         }
 
-        delete[] left;
-        delete[] right;
+        delete[] leftArray;
+        delete[] rightArray;
     }
 
     // Merge sort algorithm
-    void mergeSort(T arr[], int low, int high) {
-        if (low < high) {
-            int mid = (low + high) / 2;
-            mergeSort(arr, low, mid);
-            mergeSort(arr, mid + 1, high);
-            merge(arr, low, mid, high);
+    void mergeSort(T arr[], int left, int right) {
+        if (left < right) {
+            int middle = left + (right - left) / 2;
+
+            mergeSort(arr, left, middle);
+            mergeSort(arr, middle + 1, right);
+
+            merge(arr, left, middle, right);
         }
     }
 };
 
-// Function to count articles per year using a dynamic array of YearCount structs
+// Function to count the number of articles per year
 void countArticles_Merge(Article* articles, int articleCount) {
+    // Start the timer
     auto start = chrono::high_resolution_clock::now();
 
-    DynamicArray<YearCount> yearCounts;
+    // Use a dynamic array to hold the year counts (similar to a map)
+    DynamicArray<int> years;
+    DynamicArray<int> counts;
 
-    // Count articles per year
     for (int i = 0; i < articleCount; i++) {
         int year = extractYear(articles[i].date);
         if (year > 0) {
             bool found = false;
-            for (int j = 0; j < yearCounts.getSize(); j++) {
-                if (yearCounts[j].year == year) {
-                    yearCounts[j].count++;
+            for (int j = 0; j < years.getSize(); j++) {
+                if (years[j] == year) {
+                    counts[j]++;
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                YearCount newYearCount = {year, 1};
-                yearCounts.push_back(newYearCount);
+                years.push_back(year);
+                counts.push_back(1);
             }
         }
     }
 
-    // Sort YearCount array by year
-    yearCounts.sort();
+    // Sort the years using merge sort
+    years.sort();
 
-    // Display results sorted by year
+    // Display the results sorted by year
     cout << "\n";
-    for (int i = 0; i < yearCounts.getSize(); i++) {
-        cout << yearCounts[i].year << ": " << yearCounts[i].count << " articles" << endl;
+    for (int i = 0; i < years.getSize(); i++) {
+        cout << years[i] << ": " << counts[i] << " articles" << endl;
     }
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
     cout << "Time taken for merge sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
+
+    // Calculate memory usage for the input array
+    size_t inputMemoryUsage = calcMemoryUsage(articles, articleCount);
+
+    // Calculate additional memory usage for Merge Sort
+    size_t mergeSortMemoryUsage = calcMergeSortMemoryUsage(articleCount);
+
+    // Total memory usage
+    size_t totalMemoryUsage = inputMemoryUsage + mergeSortMemoryUsage;
+
+    cout << "Memory usage for merge sort: " << totalMemoryUsage / (1024.0 * 1024.0) << " MB" << endl;
 }

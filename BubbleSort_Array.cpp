@@ -1,12 +1,15 @@
-// SIOW HAN BIN FOR Q1
-
 #include "CSVHandling_Array.hpp"
 #include <iostream>
 #include <iomanip>
 #include <chrono>
-#include <fstream>
 
 using namespace std;
+
+// Function to calculate additional memory usage for Bubble Sort
+size_t calcBubbleSortMemoryUsage() {
+    // Bubble Sort is in-place, so no additional memory is used
+    return 0;
+}
 
 // Custom dynamic array class to simulate vector functionality
 template <typename T>
@@ -102,7 +105,7 @@ void countArticles_Bubble(Article* articles, int articleCount) {
         }
     }
 
-    // Sort the years
+    // Sort the years using bubble sort
     years.sort();
 
     // Display the results sorted by year
@@ -114,49 +117,15 @@ void countArticles_Bubble(Article* articles, int articleCount) {
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
     cout << "Time taken for bubble sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
-}
 
-void saveSortedArticlesToFile(Article* articles, int articleCount, const string& filename) {
-    ofstream outFile(filename);
+    // Calculate memory usage for the input array
+    size_t inputMemoryUsage = calcMemoryUsage(articles, articleCount);
 
-    if (!outFile) {
-        cerr << "Error opening file for writing!" << endl;
-        return;
-    }
+    // Calculate additional memory usage for Bubble Sort
+    size_t bubbleSortMemoryUsage = calcBubbleSortMemoryUsage();
 
-    if (articleCount == 0) {
-        cerr << "No articles to write!" << endl;
-        return;
-    }
+    // Total memory usage
+    size_t totalMemoryUsage = inputMemoryUsage + bubbleSortMemoryUsage;
 
-    // Use DynamicArray to store articles
-    DynamicArray<Article> dynamicArray;
-
-    // Add all articles to the dynamic array
-    for (int i = 0; i < articleCount; ++i) {
-        dynamicArray.push_back(articles[i]);
-    }
-
-    // Sort the articles by year
-    dynamicArray.sort();
-
-    // Write articles to file
-    string lastYear = "";
-    for (int i = 0; i < dynamicArray.getSize(); ++i) {
-        Article& article = dynamicArray[i];
-        int year = extractYear(article.date);
-
-        if (to_string(year) != lastYear) {
-            if (!lastYear.empty()) outFile << endl;  // Separate different years
-            outFile << "Year: " << year << endl;
-            lastYear = to_string(year);
-        }
-
-        outFile << "  Title: " << article.title << endl;
-        outFile << "  Date: " << article.date << endl;
-        outFile << "--------------------------------------" << endl;
-    }
-
-    outFile.close();
-    cout << "Sorted articles have been stored in " << filename << "." << endl;
+    cout << "Memory usage for bubble sort: " << totalMemoryUsage / (1024.0 * 1024.0) << " MB" << endl;
 }
