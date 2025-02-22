@@ -139,7 +139,7 @@ void sortArticlesBySubject_Merge(Article* articles, int articleCount, const stri
     outputFile.close();
 
     // Display a confirmation message
-    cout << "Sorted results have been exported to " << outputFileName << endl;
+    cout << "\nSorted results have been exported to " << outputFileName << endl;
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
