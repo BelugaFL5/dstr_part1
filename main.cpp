@@ -18,24 +18,23 @@ int main() {
 
     // Display article counts by year
     cout << "\n(**) Fake Articles by Year:";
-    countArticles_Bubble(fakeArticles, fakeCount);
+    sortArticlesByYear_Bubble(fakeArticles, fakeCount,"sortBubble_fake_year_Array.txt");
 
     cout << "\n(**) True Articles by Year:";
-    countArticles_Bubble(trueArticles, trueCount);
+    sortArticlesByYear_Bubble(trueArticles, trueCount,"sortBubble_true_year_Array.txt");
 
-    // Display article counts by year
-    cout << "\n(**) Fake Articles by Year:";
-    countArticles_Heap(fakeArticles, fakeCount);
-
-    cout << "\n(**) True Articles by Year:";
-    countArticles_Heap(trueArticles, trueCount);
+    // Display article counts by Subject
+    cout << "\n(**) Fake Articles by Subject:\n";
+    sortArticlesBySubject_Heap(fakeArticles, fakeCount, "sortHeap_fake_subjects_Array.txt");
+    cout << "\n(**) True Articles by Subject:\n";
+    sortArticlesBySubject_Heap(trueArticles, trueCount,"sortHeap_fake_subjects_Array.txt");
 
     cout << "\n(**) Fake Articles by Subject:\n";
-    sortArticlesBySubject_Merge(fakeArticles, fakeCount,"sort_fake_subjects_Array.txt");
+    sortArticlesBySubject_Merge(fakeArticles, fakeCount,"sortMerge_fake_subjects_Array.txt");
 
 
     cout << "\n(**) True Articles by Subject:\n";
-    sortArticlesBySubject_Merge(trueArticles, trueCount,"sort_true_subjects_Array.txt");
+    sortArticlesBySubject_Merge(trueArticles, trueCount,"sortMerge_true_subjects_Array.txt");
 
    
 

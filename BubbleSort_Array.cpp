@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <fstream> 
 
 using namespace std;
 
@@ -67,7 +68,8 @@ private:
         for (int i = 0; i < n - 1; ++i) {
             swapped = false;
             for (int j = 0; j < n - i - 1; ++j) {
-                if (arr[j] > arr[j + 1]) {
+                // Compare articles based on their year
+                if (extractYear(arr[j].date) > extractYear(arr[j + 1].date)) {
                     swap(arr[j], arr[j + 1]);
                     swapped = true;
                 }
@@ -78,41 +80,36 @@ private:
     }
 };
 
-// Function to count the number of articles per year
-void countArticles_Bubble(Article* articles, int articleCount) {
+// Function to sort articles by year and export the results to a text file
+void sortArticlesByYear_Bubble(Article* articles, int articleCount, const string& outputFileName) {
     // Start the timer
     auto start = chrono::high_resolution_clock::now();
 
-    // Use a dynamic array to hold the year counts (similar to a map)
-    DynamicArray<int> years;
-    DynamicArray<int> counts;
-
+    // Use a dynamic array to hold the articles
+    DynamicArray<Article> articleArray;
     for (int i = 0; i < articleCount; i++) {
-        int year = extractYear(articles[i].date);
-        if (year > 0) {
-            bool found = false;
-            for (int j = 0; j < years.getSize(); j++) {
-                if (years[j] == year) {
-                    counts[j]++;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                years.push_back(year);
-                counts.push_back(1);
-            }
-        }
+        articleArray.push_back(articles[i]);
     }
 
-    // Sort the years using bubble sort
-    years.sort();
+    // Sort the articles by year using bubble sort
+    articleArray.sort();
 
-    // Display the results sorted by year
-    cout << "\n";
-    for (int i = 0; i < years.getSize(); i++) {
-        cout << years[i] << ": " << counts[i] << " articles" << endl;
+    // Open a file for writing the sorted results
+    ofstream outputFile(outputFileName);
+    if (!outputFile.is_open()) {
+        cerr << "Error: Could not open file " << outputFileName << " for writing." << endl;
+        return;
     }
+
+    // Write the sorted results to the file
+    outputFile << "Articles sorted by year:\n";
+    for (int i = 0; i < articleArray.getSize(); i++) {
+        outputFile << "Year: " << extractYear(articleArray[i].date) << ", Title: " << articleArray[i].title << endl;
+    }
+    outputFile.close();
+
+    // Display a confirmation message
+    cout << "Sorted results have been exported to " << outputFileName << endl;
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);

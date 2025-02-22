@@ -6,6 +6,5 @@
 using namespace std;
 
 // Function prototypes
-void countArticles_Heap(Article* articles, int articleCount);
-
+void sortArticlesBySubject_Heap(Article* articles, int articleCount, const string& outputFileName);
 #endif // HEAPSORT_ARRAY_HPP
