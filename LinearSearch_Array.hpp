@@ -10,6 +10,7 @@ using namespace std;
 // Function declarations
 void printDashes(double percentage);
 bool isCategory(const string& subject, const string& category);
+string regex_escape(const string& input);
 double totalNewsPercentage(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize);
 int getMonthValue(const string& month);
 void saveSortedResults(Article articles[], int size, const string& selectedCategory, int searchYear = -1);
