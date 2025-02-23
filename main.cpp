@@ -16,15 +16,15 @@ int main() {
     Article* fakeArticles = readCSV("data-fake.csv", fakeCount, true);
     Article* trueArticles = readCSV("data-true.csv", trueCount, false);
 
-     // Display article counts by year
-     cout << "\n(**) Fake Articles by Year(Bubble Sort):";
-     countArticles_Bubble(fakeArticles,fakeCount);
-     sortArticlesByYear_Bubble(fakeArticles, fakeCount,"sortBubble_fake_year_Array.txt");
- 
-     cout << "\n(**) True Articles by Year(Bubble Sort):";
-     countArticles_Bubble(trueArticles,trueCount);
-     sortArticlesByYear_Bubble(trueArticles, trueCount,"sortBubble_true_year_Array.txt");
- 
+    /* // Display article counts by year
+    cout << "\n(**) Fake Articles by Year(Bubble Sort):";
+    countArticles_Bubble(fakeArticles,fakeCount);
+    sortArticlesByYear_Bubble(fakeArticles, fakeCount,"sortBubble_fake_year_Array.txt");
+
+    cout << "\n(**) True Articles by Year(Bubble Sort):";
+    countArticles_Bubble(trueArticles,trueCount);
+    sortArticlesByYear_Bubble(trueArticles, trueCount,"sortBubble_true_year_Array.txt");
+
 
     // Display article counts by Subject
     cout << "\n(**) Fake Articles by Subject(Heap Sort):\n";
@@ -40,7 +40,7 @@ int main() {
 
 
     cout << "\n(**) True Articles by Subject(Merge Sort):\n";
-    sortArticlesBySubject_Merge(trueArticles, trueCount,"sortMerge_true_subjects_Array.txt");
+    sortArticlesBySubject_Merge(trueArticles, trueCount,"sortMerge_true_subjects_Array.txt"); */
 
     // Calculate percentage of fake political news for each month in 2016
     trackNews_Array(fakeArticles, fakeCount, trueArticles, trueCount);
