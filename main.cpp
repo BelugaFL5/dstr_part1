@@ -33,7 +33,7 @@ int main() {
     
     cout << "\n(**) True Articles by Subject(Heap Sort):\n";
     
-    sortArticlesBySubject_Heap(trueArticles, trueCount,"sortHeap_fake_subjects_Array.txt");
+    sortArticlesBySubject_Heap(trueArticles, trueCount,"sortHeap_true_subjects_Array.txt");
 
     cout << "\n(**) Fake Articles by Subject(Merge Sort):\n";
     sortArticlesBySubject_Merge(fakeArticles, fakeCount,"sortMerge_fake_subjects_Array.txt");
