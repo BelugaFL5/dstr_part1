@@ -199,100 +199,6 @@ int getMonthValue(const string& month) {
     return 0;
 }
 
-void saveSortedResults(Article articles[], int size, const string& selectedCategory, int searchYear = -1) {
-    auto startSearch = startTimer();  // Start time measurement for searching
-
-    // Dynamically allocate an array to store matching articles
-    Article* filteredArticles = new Article[size];
-    int filteredSize = 0;  
-
-    // Check if there are articles to process
-    if (size == 0) {
-        delete[] filteredArticles;
-        return;
-    }
-
-    // Filter articles by category and/or year
-    for (int i = 0; i < size; i++) {
-        bool matchesCategory = selectedCategory.empty() || isCategory(articles[i].subject, selectedCategory);
-        bool matchesYear = (searchYear == -1) || (extractYear(articles[i].date) == searchYear);
-
-        if (matchesCategory && matchesYear) {
-            filteredArticles[filteredSize++] = articles[i];
-        }
-    }
-
-    // Calculate and print searching time before sorting
-    double searchTime = calcElapsedTime(startSearch);
-    cout << "\nTime taken for searching: " << fixed << setprecision(1) << searchTime << "ms" << endl;
-
-    // Calculate and display memory usage for filtered articles
-    size_t memoryUsage = calcMemoryUsage(filteredSize);
-    cout << "Memory usage for search results: " << memoryUsage / (1024.0 * 1024.0) << " MB\n";
-
-    // Check if any articles matched before sorting
-    if (filteredSize == 0) {
-        cout << "(!) No articles found matching the search criteria.\n";
-        delete[] filteredArticles;
-        return;
-    }
-
-    auto startSort = startTimer();  // Start time measurement for sorting
-
-    // Bubble sort the filtered articles by descending date, placing "unknown" category/date last
-    for (int i = 0; i < filteredSize - 1; i++) {
-        for (int j = 0; j < filteredSize - i - 1; j++) {
-            int yearA = extractYear(filteredArticles[j].date);
-            int yearB = extractYear(filteredArticles[j + 1].date);
-            
-            string monthA = filteredArticles[j].date.substr(0, 3);
-            string monthB = filteredArticles[j + 1].date.substr(0, 3);
-            
-            int monthValueA = getMonthValue(monthA);
-            int monthValueB = getMonthValue(monthB);
-
-            bool unknownA = (filteredArticles[j].subject == "unknown" || filteredArticles[j].date == "unknown");
-            bool unknownB = (filteredArticles[j + 1].subject == "unknown" || filteredArticles[j + 1].date == "unknown");
-
-            // Sorting logic:
-            if (!unknownA && unknownB) {
-                swap(filteredArticles[j], filteredArticles[j + 1]);  // Move "unknown" to end
-            } else if (!unknownA && !unknownB) {
-                if (yearA < yearB || (yearA == yearB && monthValueA < monthValueB)) {
-                    swap(filteredArticles[j], filteredArticles[j + 1]);  // Sort by latest date first
-                }
-            }
-        }
-    }
-
-    // Display sorting time
-    double sortTime = calcElapsedTime(startSort);
-    cout << "Time taken for sorting: " << fixed << setprecision(1) << sortTime << "ms" << endl;
-
-    // Save filtered and sorted results
-    ofstream outFile("searchResults.txt");
-    if (!outFile) {
-        delete[] filteredArticles;
-        return;
-    }
-
-    if (filteredSize == 0) {
-        outFile << "(?) No matching articles found.\n";
-    } else {
-        for (int i = 0; i < filteredSize; i++) {
-            outFile << "Title: " << filteredArticles[i].title << "\n";
-            outFile << "Category: " << filteredArticles[i].subject << "\n";
-            outFile << "Date: " << filteredArticles[i].date << "\n\n";
-        }
-    }
-    outFile.close();
-    
-    cout << "(**) " << filteredSize << " matching articles found and saved to searchResults.txt" << endl;
-
-    // Free dynamically allocated memory
-    delete[] filteredArticles;
-}
-
 // Function to search for news articles by category and save results to a file
 void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
     int categoryChoice, searchType;
@@ -322,10 +228,10 @@ void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], 
         cin >> categoryChoice;
 
         switch (categoryChoice) {
-            case 1: selectedCategory = "government news"; break;
-            case 2: selectedCategory = "left-news"; break;
-            case 3: selectedCategory = "middle-east"; break;
-            case 4: selectedCategory = "us_news"; break;
+            case 1: selectedCategory = "government"; break;
+            case 2: selectedCategory = "left"; break;
+            case 3: selectedCategory = "middle"; break;
+            case 4: selectedCategory = "us"; break;
             case 5: selectedCategory = "news"; break;
             case 6: selectedCategory = "politics"; break;
             default: cout << "Invalid choice. Exiting.\n"; return;
@@ -352,10 +258,44 @@ void linearSearchByCategory(Article fakeArr[], int fakeSize, Article trueArr[], 
         return;
     }
 
-    saveSortedResults(arr, size, selectedCategory);
+    auto startSearch = startTimer();  // Start search time measurement
+
+    // Open file to save results
+    ofstream outFile("searchResults.txt");
+    if (!outFile) {
+        cout << "Error: Unable to open file.\n";
+        return;
+    }
+
+    int count = 0;
+
+    // Search and save results
+    for (int i = 0; i < size; i++) {
+        if (isCategory(arr[i].subject, selectedCategory)) {
+            outFile << "Title: " << arr[i].title << "\n";
+            outFile << "Category: " << arr[i].subject << "\n";
+            outFile << "Date: " << arr[i].date << "\n\n";
+            count++;
+        }
+    }
+
+    double searchTime = calcElapsedTime(startSearch);
+    cout << "\nTime taken for searching: " << fixed << setprecision(1) << searchTime << "ms" << endl;
+
+    size_t memoryUsage = calcMemoryUsage(count);
+    cout << "Memory usage for search results: " << memoryUsage / (1024.0 * 1024.0) << " MB\n";
+
+    if (count == 0) {
+        outFile << "(?) No matching articles found.\n";
+        cout << "(!) No articles found matching the search criteria.\n";
+    } else {
+        cout << "(**) " << count << " matching articles found and saved to searchResults.txt\n";
+    }
+
+    outFile.close();
 }
 
-// Function to search for news articles by year and save results to a files
+// Function to search for news articles by year and save results to a file
 void linearSearchByYear(Article fakeArr[], int fakeSize, Article trueArr[], int trueSize) {
     int searchYear, searchType;
     cout << "\nEnter the year to search: ";
@@ -381,7 +321,41 @@ void linearSearchByYear(Article fakeArr[], int fakeSize, Article trueArr[], int 
         return;
     }
 
-    saveSortedResults(arr, size, "", searchYear);
+    auto startSearch = startTimer();  // Start search time measurement
+
+    // Open file to save results
+    ofstream outFile("searchResults.txt");
+    if (!outFile) {
+        cout << "Error: Unable to open file.\n";
+        return;
+    }
+
+    int count = 0;
+
+    // Search and save results
+    for (int i = 0; i < size; i++) {
+        if (extractYear(arr[i].date) == searchYear) {
+            outFile << "Title: " << arr[i].title << "\n";
+            outFile << "Category: " << arr[i].subject << "\n";
+            outFile << "Date: " << arr[i].date << "\n\n";
+            count++;
+        }
+    }
+
+    double searchTime = calcElapsedTime(startSearch);
+    cout << "\nTime taken for searching: " << fixed << setprecision(1) << searchTime << "ms" << endl;
+
+    size_t memoryUsage = calcMemoryUsage(count);
+    cout << "Memory usage for search results: " << memoryUsage / (1024.0 * 1024.0) << " MB\n";
+
+    if (count == 0) {
+        outFile << "(?) No matching articles found.\n";
+        cout << "(!) No articles found matching the search criteria.\n";
+    } else {
+        cout << "(**) " << count << " matching articles found and saved to searchResults.txt\n";
+    }
+
+    outFile.close();
 }
 
 // Function to allow user to select search mode
