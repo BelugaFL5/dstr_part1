@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
-#include <fstream> 
+#include <fstream>
 
 using namespace std;
 
@@ -62,13 +62,28 @@ public:
     }
 
 private:
-    // Bubble sort algorithm
-    void bubbleSort(T arr[], int n) {
+    // Bubble sort algorithm for integers
+    void bubbleSort(int arr[], int n) {
         bool swapped;
         for (int i = 0; i < n - 1; ++i) {
             swapped = false;
             for (int j = 0; j < n - i - 1; ++j) {
-                // Compare articles based on their year
+                if (arr[j] > arr[j + 1]) {
+                    swap(arr[j], arr[j + 1]);
+                    swapped = true;
+                }
+            }
+            // If no two elements were swapped in the inner loop, break
+            if (!swapped) break;
+        }
+    }
+
+    // Bubble sort algorithm for Article objects
+    void bubbleSort(Article arr[], int n) {
+        bool swapped;
+        for (int i = 0; i < n - 1; ++i) {
+            swapped = false;
+            for (int j = 0; j < n - i - 1; ++j) {
                 if (extractYear(arr[j].date) > extractYear(arr[j + 1].date)) {
                     swap(arr[j], arr[j + 1]);
                     swapped = true;
@@ -109,11 +124,11 @@ void sortArticlesByYear_Bubble(Article* articles, int articleCount, const string
     outputFile.close();
 
     // Display a confirmation message
-    cout << "Sorted results have been exported to " << outputFileName << endl;
+    cout << "\nSorted results have been exported to " << outputFileName << endl;
 
     // Calculate elapsed time
     double elapsedTime = calcElapsedTime(start);
-    cout << "Time taken for bubble sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
+    cout << "\nTime taken for bubble sort: " << fixed << setprecision(2) << elapsedTime << "ms" << endl;
 
     // Calculate memory usage for the input array
     size_t inputMemoryUsage = calcMemoryUsage(articles, articleCount);
@@ -126,3 +141,39 @@ void sortArticlesByYear_Bubble(Article* articles, int articleCount, const string
 
     cout << "Memory usage for bubble sort: " << totalMemoryUsage / (1024.0 * 1024.0) << " MB" << endl;
 }
+
+// Function to count the number of articles per year
+void countArticles_Bubble(Article* articles, int articleCount) {
+    
+    // Use a dynamic array to hold the year counts (similar to a map)
+    DynamicArray<int> years;
+    DynamicArray<int> counts;
+
+    for (int i = 0; i < articleCount; i++) {
+        int year = extractYear(articles[i].date);
+        if (year > 0) {
+            bool found = false;
+            for (int j = 0; j < years.getSize(); j++) {
+                if (years[j] == year) {
+                    counts[j]++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                years.push_back(year);
+                counts.push_back(1);
+            }
+        }
+    }
+
+    // Sort the years using bubble sort
+    years.sort();
+
+    // Display the results sorted by year
+    cout << "\n";
+    for (int i = 0; i < years.getSize(); i++) {
+        cout << years[i] << ": " << counts[i] << " articles" << endl;
+    }
+
+   }

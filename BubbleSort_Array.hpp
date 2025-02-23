@@ -6,5 +6,6 @@
 using namespace std;
 
 void sortArticlesByYear_Bubble(Article* articles, int articleCount, const string& outputFileName);
+void countArticles_Bubble(Article* articles, int articleCount);
 #endif
 

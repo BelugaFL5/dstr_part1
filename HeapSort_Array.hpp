@@ -7,4 +7,5 @@ using namespace std;
 
 // Function prototypes
 void sortArticlesBySubject_Heap(Article* articles, int articleCount, const string& outputFileName);
+
 #endif // HEAPSORT_ARRAY_HPP
